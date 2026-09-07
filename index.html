@@ -741,34 +741,47 @@ const BK={
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 /* عزل التعابير الرياضية عن اتجاه النص العربي.
-   بدونه يقلب المتصفح ترتيب المعادلة: «5 + 7 × (11 − 8)» تُعرض «(8 − 11) × 7 + 5». */
-/* حروف تُستعمل متغيّرات أو تسميات أشكال هندسية: س ص ع ن أ ب ج د ه
-   تُكتب التعابير كـ regex literal لا كنص — بناؤها من نص يُفسد \s و \- ويكوّن مدى يبتلع كل الحروف. */
+   بدونه يقلب المتصفح ترتيب المعادلة: «5 + 7 × (11 − 8)» تُعرض «(8 − 11) × 7 + 5».
+   قواعد الحدود (كلها مستخلَصة من أخطاء حقيقية ظهرت للمستخدم):
+   1) لا عزل إلا بوجود مُعاملين فأكثر — الانعكاس لا يقع مع رقم واحد، وعزله يُفسد موضعه.
+   2) العوامل الثنائية (= < > ≤ ≥ × ÷ :) تبقى خارج طرفَي العزل وإلا انتقلت لأقصى الطرف.
+   3) الحرف العربي الملتصق بكلمة مجاورة يُعاد إليها («المخمّس + 1» لا «المخمّ» + «س + 1»).
+   4) كلمة عربية على طرف التعبير تُقصّ، وإن كانت في وسطه يُلغى العزل كلياً.
+   تُكتب التعابير النمطية مباشرة لا كنصوص: بناؤها من نص يُفسد \s و \- ويكوّن مدى يبتلع كل الحروف. */
 const MTOK=/([0-9٠-٩\s.,:+\-−×÷=<>≤≥%()²³⁴⁵√π\/سصأبجد]+)/g;
-const HASNUM=/[0-9٠-٩]/, HASOP=/[+\-−×÷=<>≤≥√²³⁴⁵π%\/]/;
+const HASNUM=/[0-9٠-٩]/, HASOP=/[+\-−×÷=<>≤≥:√²³⁴⁵π%\/]/;
 const HASVAR=/[سصأبجد]/;
 const ARWORD=/[ء-ي]{2}/;                 // حرفان عربيان متجاوران = كلمة لا متغيّر
-const TRIMV=/(\s+[سصأبجد])$/;
+const ARCH=/[ء-ْ]/;            // حرف عربي أو تشكيل (للالتصاق بالكلمات)
+const OPERAND=/[0-9٠-٩]+|[سصأبجد]/g;     // المُعاملات التي نعدّها
+const LEADBAD=/^[\s=<>≤≥×÷:,.]+/;        // عوامل ثنائية في البداية تبقى خارج العزل
+const TAILBAD=/[\s=<>≤≥×÷:,.+\-−]+$/;    // وكذلك في النهاية
+
 function mfix(s){
-  return String(s).split(MTOK).map((part,i)=>{
+  const arr=String(s).split(MTOK);
+  return arr.map((part,i)=>{
     if(i%2!==1 || !HASOP.test(part)) return esc(part);
-    if(!HASNUM.test(part) && !HASVAR.test(part)) return esc(part);   // «أ > ب» متغيرات بلا أرقام
-    let core=part, head="", tail="";
-    const v=core.match(TRIMV);                 // «9π سم» ← لا تبتلع بداية الكلمة العربية
-    if(v){ tail=v[1]+tail; core=core.slice(0,-v[1].length); }
-    let mh=core.match(/^[\s:,.]+/);            // ترقيم قبل التعبير يبقى مع النص العربي
-    if(mh){ head+=mh[0]; core=core.slice(mh[0].length); }
-    let mt=core.match(/[\s:,.]+$/);            // ونقطة/فاصلة بعده كذلك
-    if(mt){ tail=mt[0]+tail; core=core.slice(0,-mt[0].length); }
-    if(ARWORD.test(core)){                     // «العدد = 14 × 4» ← اقصص الكلمة من الطرف واعزل الباقي
-      const lw=core.match(/^[ء-ي]+\s*/);  if(lw){ head+=lw[0]; core=core.slice(lw[0].length); }
-      const tw=core.match(/\s*[ء-ي]+$/);  if(tw){ tail=tw[0]+tail; core=core.slice(0,-tw[0].length); }
-      if(ARWORD.test(core)) return esc(part);  // كلمة في وسط التعبير: لا تعزل إطلاقاً
-      const mh2=core.match(/^[\s:,.]+/); if(mh2){ head+=mh2[0]; core=core.slice(mh2[0].length); }
-      const mt2=core.match(/[\s:,.]+$/); if(mt2){ tail=mt2[0]+tail; core=core.slice(0,-mt2[0].length); }
+    let core=part, head="", tail="", m;
+    const prev=arr[i-1]||"", next=arr[i+1]||"";
+
+    m=core.match(/^[سصأبجد]+/);                // ملتصق بآخر الكلمة السابقة («العدد» تنتهي بحرفين)
+    if(m && ARCH.test(prev.slice(-1))){ head+=m[0]; core=core.slice(m[0].length); }
+    m=core.match(/[سصأبجد]+$/);                // ملتصق بأول الكلمة التالية
+    if(m && ARCH.test(next.charAt(0))){ tail=m[0]+tail; core=core.slice(0,-m[0].length); }
+    m=core.match(/(\s+[سصأبجد])$/);            // «9π سم» ← «س» بداية كلمة
+    if(m && ARCH.test(next.charAt(0))){ tail=m[1]+tail; core=core.slice(0,-m[1].length); }
+
+    if(ARWORD.test(core)){                     // «العدد = 14 × 4» ← اقصص الكلمة من الطرف
+      const lw=core.match(/^[ء-ي]+\s*/); if(lw){ head+=lw[0]; core=core.slice(lw[0].length); }
+      const tw=core.match(/\s*[ء-ي]+$/); if(tw){ tail=tw[0]+tail; core=core.slice(0,-tw[0].length); }
+      if(ARWORD.test(core)) return esc(part);  // كلمة في الوسط: لا تعزل إطلاقاً
     }
+
+    m=core.match(LEADBAD); if(m){ head+=m[0]; core=core.slice(m[0].length); }
+    m=core.match(TAILBAD); if(m){ tail=m[0]+tail; core=core.slice(0,-m[0].length); }
+
     if(!HASOP.test(core)) return esc(part);
-    if(!HASNUM.test(core)&&!HASVAR.test(core)) return esc(part);
+    if((core.match(OPERAND)||[]).length<2) return esc(part);   // مُعامل واحد لا يحتاج عزلاً
     return esc(head)+'<span class="m">'+esc(core)+'</span>'+esc(tail);
   }).join("");
 }
