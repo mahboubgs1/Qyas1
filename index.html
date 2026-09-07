@@ -183,6 +183,24 @@ section{padding:18px 0 8px}
 .seg button{flex:1;background:transparent;border:0;border-radius:9px;padding:9px 4px;font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.35}
 .seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 
+/* لوح الحل */
+.board{position:fixed;inset-inline:0;bottom:0;z-index:40;background:var(--surface);
+  border-top:1px solid var(--line);box-shadow:0 -10px 30px rgba(18,32,29,.14);
+  display:flex;flex-direction:column;height:min(56vh,460px);
+  padding-bottom:env(safe-area-inset-bottom)}
+.board .tools{display:flex;align-items:center;gap:6px;padding:7px 10px;border-bottom:1px solid var(--line);flex:none}
+.board .tools .lbl{font-size:11.5px;color:var(--muted);font-weight:600;margin-inline-end:2px}
+.board .tools .sp{flex:1}
+.tbtn{background:var(--surface-2);border:1px solid transparent;border-radius:9px;
+  min-width:38px;height:34px;padding:0 10px;font-size:13px;font-weight:600;color:var(--ink-2);
+  display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.tbtn[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:transparent}
+:root[data-theme="dark"] .tbtn[aria-pressed="true"]{color:#07110F}
+.tbtn.q{background:transparent;border-color:var(--line);color:var(--muted)}
+.board .pad{flex:1;position:relative;overflow:hidden;background-color:var(--surface);
+  background-image:radial-gradient(var(--line) 1.1px, transparent 1.1px);background-size:26px 26px}
+.board canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+.board .hint{position:absolute;inset-inline:0;top:42%;text-align:center;color:var(--muted);font-size:13px;pointer-events:none}
 .empty{text-align:center;padding:26px 16px;color:var(--muted);font-size:13.5px}
 .code{width:100%;min-height:88px;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.55;direction:ltr;text-align:left;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:10px;word-break:break-all}
 .inp{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 12px;color:var(--ink);font-size:14px;font-family:inherit}
@@ -1131,7 +1149,7 @@ function renderPlan(){
 /* ---------- الجلسة ---------- */
 function startDiagnostic(){
   const qs=SKILLS.map(s=>pickQuestions([s.id],1)[0]).filter(Boolean).map(prep);
-  session={qs,i:0,mode:"diag",title:"الاختبار التشخيصي",answered:null,conf:null,t0:Date.now(),right:0};
+  session={qs,i:0,mode:"diag",title:"الاختبار التشخيصي",answered:null,conf:null,t0:Date.now(),right:0,board:[],boardOpen:false};
   render();
 }
 function startSmart(n){
@@ -1144,14 +1162,107 @@ function startSmart(n){
     if(cand[0]){used.add(cand[0].id); qs.push(cand[0])}
   });
   if(!qs.length) return;
-  session={qs:qs.slice(0,n).map(prep),i:0,mode:"smart",title:"تدريب ذكي",answered:null,conf:null,t0:Date.now(),right:0};
+  session={qs:qs.slice(0,n).map(prep),i:0,mode:"smart",title:"تدريب ذكي",answered:null,conf:null,t0:Date.now(),right:0,board:[],boardOpen:false};
   render();
 }
 function startSkill(id){
   const qs=pickQuestions([id],6);
   if(!qs.length) return;
-  session={qs:qs.map(prep),i:0,mode:"skill",title:SK[id].name,answered:null,conf:null,t0:Date.now(),right:0};
+  session={qs:qs.map(prep),i:0,mode:"skill",title:SK[id].name,answered:null,conf:null,t0:Date.now(),right:0,board:[],boardOpen:false};
   render();
+}
+
+/* ---------- لوح الحل ---------- */
+let boardMode="pen", penSeen=false;
+function boardHTML(){
+  return `<div class="board" id="board">
+    <div class="tools">
+      <span class="lbl">ورقة الحل</span>
+      <button class="tbtn" data-bm="pen"    aria-pressed="${boardMode==="pen"}" title="قلم">✎</button>
+      <button class="tbtn" data-bm="eraser" aria-pressed="${boardMode==="eraser"}" title="ممحاة">◻</button>
+      <button class="tbtn q" id="bundo" title="تراجع">↶</button>
+      <button class="tbtn q" id="bclear" title="مسح الكل">مسح</button>
+      <span class="sp"></span>
+      <button class="tbtn q" id="bclose" title="إغلاق">✕</button>
+    </div>
+    <div class="pad">
+      <canvas id="bcv"></canvas>
+      ${(session.board||[]).length?"":'<div class="hint">اكتبي هنا بإصبعك أو بالقلم</div>'}
+    </div>
+  </div>`;
+}
+function boardMount(){
+  const cv=document.getElementById("bcv"); if(!cv) return;
+  const pad=cv.parentElement;
+  const cs=getComputedStyle(document.documentElement);
+  const INK=(cs.getPropertyValue("--ink")||"#111").trim();
+  let ctx=null, dpr=1;
+
+  function fit(){
+    const r=pad.getBoundingClientRect();
+    dpr=Math.min(2, window.devicePixelRatio||1);
+    cv.width=Math.max(1,Math.round(r.width*dpr));
+    cv.height=Math.max(1,Math.round(r.height*dpr));
+    ctx=cv.getContext("2d");
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineCap="round"; ctx.lineJoin="round";
+    repaint();
+  }
+  function one(st,a,b){
+    ctx.globalCompositeOperation = st.e ? "destination-out" : "source-over";
+    ctx.strokeStyle=INK; ctx.lineWidth=st.w;
+    ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+    ctx.globalCompositeOperation="source-over";
+  }
+  function dot(st,a){
+    ctx.globalCompositeOperation = st.e ? "destination-out" : "source-over";
+    ctx.fillStyle=INK;
+    ctx.beginPath(); ctx.arc(a[0],a[1],st.w/2,0,6.284); ctx.fill();
+    ctx.globalCompositeOperation="source-over";
+  }
+  function repaint(){
+    const r=pad.getBoundingClientRect();
+    ctx.clearRect(0,0,r.width,r.height);
+    (session.board||[]).forEach(st=>{
+      if(st.p.length===1) return dot(st,st.p[0]);
+      for(let i=1;i<st.p.length;i++) one(st,st.p[i-1],st.p[i]);
+    });
+  }
+  fit();
+  addEventListener("resize", fit, {passive:true});
+
+  const at=e=>{ const r=cv.getBoundingClientRect(); return [e.clientX-r.left, e.clientY-r.top]; };
+  let cur=null;
+  cv.addEventListener("pointerdown",e=>{
+    if(e.pointerType==="pen") penSeen=true;
+    if(penSeen && e.pointerType==="touch") return;   // رفض راحة اليد عند استخدام القلم
+    e.preventDefault();
+    try{ cv.setPointerCapture(e.pointerId); }catch(_){}
+    const hint=pad.querySelector(".hint"); if(hint) hint.remove();
+    cur={e:boardMode==="eraser", w:boardMode==="eraser"?22:2.6, p:[at(e)]};
+    session.board.push(cur); dot(cur,cur.p[0]);
+  });
+  cv.addEventListener("pointermove",e=>{
+    if(!cur) return;
+    e.preventDefault();
+    const pts=(e.getCoalescedEvents? e.getCoalescedEvents():[e]).map(at);
+    pts.forEach(p=>{ one(cur,cur.p[cur.p.length-1],p); cur.p.push(p); });
+  });
+  const end=()=>{ cur=null; };
+  cv.addEventListener("pointerup",end);
+  cv.addEventListener("pointercancel",end);
+  cv.addEventListener("pointerleave",end);
+
+  document.querySelectorAll("[data-bm]").forEach(b=>b.onclick=()=>{
+    boardMode=b.dataset.bm;
+    document.querySelectorAll("[data-bm]").forEach(x=>x.setAttribute("aria-pressed", x.dataset.bm===boardMode));
+  });
+  document.getElementById("bundo").onclick=()=>{ session.board.pop(); repaint(); };
+  document.getElementById("bclear").onclick=()=>{ session.board=[]; repaint(); };
+  document.getElementById("bclose").onclick=()=>{ session.boardOpen=false; renderSession(); };
+}
+function boardPad(){
+  document.body.style.paddingBottom = (session && session.boardOpen) ? "calc(min(56vh,460px) + 20px)" : "";
 }
 
 let tick=null;
@@ -1167,6 +1278,9 @@ function renderSession(){
       <button class="iconbtn" id="quit" aria-label="إنهاء الجلسة">✕</button>
       <span class="prog"><i style="width:${(s.i/s.qs.length)*100}%"></i></span>
       <span class="timer" id="tmr">0:00</span>
+      <button class="iconbtn" id="bord" aria-pressed="${s.boardOpen?"true":"false"}"
+        style="${s.boardOpen?"background:var(--accent);color:#fff;border-color:transparent":""}"
+        aria-label="ورقة الحل" title="ورقة الحل">✎</button>
     </div>
     <div class="qmeta">
       <span class="chip">${esc(s.title)}</span>
@@ -1193,13 +1307,16 @@ function renderSession(){
         ${s.answered!==q.a && q.m[s.answered]?`<div class="why">سبب الخطأ: ${esc(WHY[q.m[s.answered]]||"")}</div>`:""}
       </div>
       <div style="margin-top:14px"><button class="btn" id="next">${s.i+1<s.qs.length?"السؤال التالي":"عرض النتيجة"}</button></div>`:""}
-  </div>`;
+  </div>
+  ${s.boardOpen?boardHTML():""}`;
 
-  document.getElementById("quit").onclick=()=>{session=null; setTab(tab)};
+  document.getElementById("quit").onclick=()=>{session=null; document.body.style.paddingBottom=""; setTab(tab)};
+  document.getElementById("bord").onclick=()=>{ s.boardOpen=!s.boardOpen; renderSession(); };
+  boardPad(); if(s.boardOpen) boardMount();
   app.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{s.conf=b.dataset.c; renderSession()});
   app.querySelectorAll(".ch").forEach(b=>b.onclick=()=>answer(+b.dataset.i));
   const nx=document.getElementById("next");
-  if(nx) nx.onclick=()=>{s.i++; s.answered=null; s.conf=null; s.t0=Date.now(); renderSession()};
+  if(nx) nx.onclick=()=>{s.i++; s.answered=null; s.conf=null; s.t0=Date.now(); s.board=[]; renderSession()};
 
   if(!showAns){
     const el=document.getElementById("tmr");
@@ -1224,7 +1341,7 @@ function answer(i){
   renderSession();
 }
 function renderSummary(){
-  clearInterval(tick);
+  clearInterval(tick); document.body.style.paddingBottom="";
   const s=session, n=s.qs.length, r=s.right;
   const bySkill={};
   s.qs.forEach((q,i)=>{(bySkill[q.s] ||= {n:0}).n++});
