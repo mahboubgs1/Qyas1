@@ -49,6 +49,13 @@ if ("serviceWorker" in navigator) {
 
 
 def main():
+    if "--skip-validate" not in sys.argv:
+        import validate
+        if validate.main() != 0:
+            print("\nBUILD ABORTED: validation failed. Fix the errors above.")
+            print("(--skip-validate to override, only when you know why.)")
+            sys.exit(1)
+
     src = io.open(SRC, encoding="utf-8").read()
     head, body = src.split("</style>", 1)
     doc = HEAD + head + "</style>\n</head>\n<body>\n" + body.strip() + TAIL
