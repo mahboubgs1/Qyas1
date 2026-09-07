@@ -153,7 +153,7 @@ section{padding:18px 0 8px}
 .qmeta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .stem{font-size:17px;line-height:1.85;font-weight:500;margin:6px 0 4px}
 .stem .frm{display:inline-block;background:var(--surface-2);border-radius:6px;padding:1px 7px;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
-.m{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+.m{direction:ltr;unicode-bidi:isolate-override;font-variant-numeric:tabular-nums}
 .passage{background:var(--surface-2);border-radius:12px;padding:13px 14px;font-size:14.5px;line-height:1.95;margin-bottom:12px}
 .conf{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:11px;margin:12px 0}
 .conf button{flex:1;background:transparent;border:0;border-radius:8px;padding:7px;font-size:12.5px;font-weight:600;color:var(--muted)}
@@ -296,6 +296,7 @@ const WHY = {
   seq_rule:"استنتاج نمط خاطئ",
   angle_sum:"خطأ في مجموع الزوايا",
   insufficient:"الحكم بعدم كفاية المعطيات خطأً",
+  strict:"تجاهل التساوي في المتباينة (≤ بدل <)",
   relation:"علاقة تناظر غير دقيقة",
   context:"تجاهل سياق الجملة",
   opposite:"اختيار الضدّ بدل المطلوب",
@@ -506,7 +507,7 @@ const Q = [
 {s:"eqn",q:"اشترت طالبة 3 أقلام ودفتراً بمبلغ 27 ريالاً، وكان ثمن الدفتر 9 ريالات. كم ثمن القلم الواحد؟",c:["6","9","12","5"],a:0,m:[null,"partial","partial","partial"],e:"ثمن الأقلام الثلاثة = 27 − 9 = 18 ريالاً، والقلم الواحد = 18 ÷ 3 = 6 ريالات.",d:1},
 /* المتباينات */
 {s:"ineq",q:"إذا كان س عدداً صحيحاً و −2 < س ≤ 3، فكم عدد القيم الممكنة لـ س؟",c:["5","6","4","7"],a:0,m:[null,"sign","partial","sign"],e:"القيم هي: −1، 0، 1، 2، 3 — خمس قيم. لاحظي أن −2 غير مشمولة و3 مشمولة.",d:3},
-{s:"ineq",q:"إذا كان 2س + 3 ≥ 11، فما أصغر قيمة ممكنة لـ س؟",c:["4","7","5","3"],a:0,m:[null,"partial","sign","sign"],e:"2س ≥ 8 ⇒ س ≥ 4. وبما أن التساوي مسموح، فأصغر قيمة هي 4.",d:2},
+{s:"ineq",q:"إذا كان 2س + 3 ≥ 11، فما أصغر قيمة ممكنة لـ س؟",c:["4","7","5","3"],a:0,m:[null,"partial","partial","strict"],e:"2س ≥ 8 ⇒ س ≥ 4. وبما أن التساوي مسموح، فأصغر قيمة هي 4.",d:2},
 /* الأسس */
 {s:"exp",q:"أوجد قيمة: (2³)²",c:["64","32","128","12"],a:0,m:[null,"exp_rule","exp_rule","exp_rule"],e:"عند رفع أس إلى أس تُضرب الأسس: 2³ˣ² = 2⁶ = 64.",d:2},
 {s:"exp",q:"أوجد قيمة: √(16 × 9)",c:["12","25","7","144"],a:0,m:[null,"exp_rule","partial","exp_rule"],e:"√(16×9) = √16 × √9 = 4 × 3 = 12.",d:2},
@@ -753,7 +754,7 @@ function mfix(s){
     if(mh){ head+=mh[0]; core=core.slice(mh[0].length); }
     let mt=core.match(/[\s:,.]+$/);            // ونقطة/فاصلة بعده كذلك
     if(mt){ tail=mt[0]+tail; core=core.slice(0,-mt[0].length); }
-    if(!HASNUM.test(core)||!HASOP.test(core)) return esc(part);
+    if(!HASNUM.test(core)||!HASOP.test(core)||/[سص]\s*[سص]/.test(core)) return esc(part);
     return esc(head)+'<span class="m">'+esc(core)+'</span>'+esc(tail);
   }).join("");
 }
