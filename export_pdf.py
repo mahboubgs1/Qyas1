@@ -42,6 +42,7 @@ SKILLS.forEach(s=>{
     out.push({type:"q", n:n, id:"q#"+idx, skill:s.name, d:q.d,
       passage: q.p? mfix(q.p):null,
       cmp: cmpParts(q.q) ? {pre:mfix(cmpParts(q.q).pre), a:mfix(cmpParts(q.q).a), b:mfix(cmpParts(q.q).b)} : null,
+      fig: q.f || null,
       stem: mfix(q.q),
       choices: q.c.map((c,j)=>({ t:mfix(c), ok:j===q.a, why:q.m[j]? (WHY[q.m[j]]||q.m[j]) : null })),
       expl: mfix(q.e)});
@@ -81,6 +82,8 @@ ol.ch li.ok::after{content:" ✔";color:#2E8B69}
 .why{color:#9a8560;font-size:8pt}
 .ex{margin-top:5pt;font-size:9.5pt;color:#3C4B47;background:#FAFBFA;border-radius:4pt;padding:5pt 8pt}
 .ex b{color:#0E6E63}
+.fig{margin:5pt 0 6pt;text-align:center;color:#12201D}
+.fig svg{max-width:78%;height:auto}
 table.cmp{border-collapse:collapse;width:100%;margin:4pt 0 6pt;border:0.5pt solid #C6D6D0;border-radius:3pt}
 table.cmp td{border-bottom:0.5pt solid #DCE5E1;padding:4pt 8pt;font-size:10.5pt}
 table.cmp tr:last-child td{border-bottom:0}
@@ -151,6 +154,8 @@ def main():
                          % (c["a"], c["b"]))
             else:
                 b.append('<p class="stem">%s</p>' % x["stem"])
+            if x.get("fig"):
+                b.append('<div class="fig">%s</div>' % x["fig"])
             b.append('<ol class="ch">')
             for c in x["choices"]:
                 w = ' <span class="why">— %s</span>' % c["why"] if c["why"] else ""

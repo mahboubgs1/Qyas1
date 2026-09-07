@@ -61,7 +61,7 @@ def main():
     doc = HEAD + head + "</style>\n</head>\n<body>\n" + body.strip() + TAIL
     io.open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(doc)
 
-    n_q = len(re.findall(r'\{s:"[a-z]+",(?:p:|q:)', doc))
+    n_q = len(re.findall(r'[{,]s:"[a-z]+",(?:p:|q:)', doc))
     print("index.html : %d chars | %d questions" % (len(doc), n_q))
 
     if "--bump" in sys.argv:
