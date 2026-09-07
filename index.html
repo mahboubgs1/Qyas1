@@ -721,7 +721,9 @@ document.getElementById("themeBtn").onclick=()=>{
 };
 
 function render(){
-  document.getElementById("streak").textContent = streak()? "🔥 "+streak()+" يوم" : "";
+  const stEl=document.getElementById("streak"), stN=streak();
+  stEl.textContent = stN? "🔥 "+stN+" يوم" : "";
+  stEl.hidden = !stN;
   if(session) return renderSession();
   ({home:renderHome, train:renderTrain, report:renderReport, plan:renderPlan, group:renderGroup}[tab])();
 }
