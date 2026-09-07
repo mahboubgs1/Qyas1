@@ -905,7 +905,7 @@ function renderReport(){
         <span class="v tnum">×${s.speed.toFixed(1)}</span></div>`).join("")}</div>
       <p class="note" style="margin-top:9px">×1.0 يعني أنك بالزمن المعياري. فوق ×1.3 يعني أن الوقت — لا المعرفة — هو ما سيكلّفك درجات.</p>`:""}
 
-    <div class="sechead" style="margin-top:24px"><h2 style="font-size:14.5px">مشاركة تقريرك</h2></div>
+    <div class="sechead" style="margin-top:24px" id="sharecard"><h2 style="font-size:14.5px">مشاركة تقريرك</h2></div>
     <div class="card stack">
       <div class="muted" style="font-size:12.5px">اكتبي اسمك، ثم انسخي الكود وأرسليه لمن يتابع مجموعتكن. الكود يحمل ملخّص مهاراتك فقط — لا يحمل إجاباتك ولا أي بيانات شخصية أخرى.</div>
       <input class="inp" id="nm" placeholder="اسمك" value="${esc(S.name||"")}" maxlength="24">
@@ -1232,10 +1232,16 @@ function renderSummary(){
       <div class="stack" style="margin-top:18px">
         <button class="btn" id="again">جلسة أخرى</button>
         <button class="btn ghost" data-go="report">شوفي تقريرك الكامل</button>
+        <button class="btn soft" id="share">أرسلي تقريرك</button>
       </div>
     </section>
   </div>`;
   document.getElementById("again").onclick=()=>startSmart(12);
+  document.getElementById("share").onclick=()=>{
+    setTab("report");
+    const t=document.getElementById("sharecard");
+    if(t) t.scrollIntoView({behavior:"smooth",block:"center"});
+  };
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>setTab(b.dataset.go));
   app.querySelectorAll("[data-skill]").forEach(b=>b.onclick=()=>startSkill(b.dataset.skill));
 }
