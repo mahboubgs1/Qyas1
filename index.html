@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="تدريب على اختبار قياس (القدرات العامة) مع تشخيص نقاط الضعف على مستوى المهارة وسبب الخطأ.">
+<meta name="theme-color" content="#0E6E63" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0C1412" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="مِقياس">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{color-scheme:light dark}
+*{-webkit-tap-highlight-color:transparent}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>مِقياس</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F6F8F7; --surface:#FFFFFF; --surface-2:#EFF3F1;
+  --ink:#12201D; --ink-2:#3C4B47; --muted:#5E6E6A; --line:#DEE5E2;
+  --accent:#0E6E63; --accent-ink:#0A4F47; --accent-soft:#E2EFEC;
+  --crit:#C4453C; --crit-soft:#F7E6E4;
+  --frag:#B07C14; --frag-soft:#F8EEDA;
+  --slow:#3D7EA6; --slow-soft:#E3EEF5;
+  --solid:#2E8B69; --solid-soft:#E2F0EA;
+  --shadow:0 1px 2px rgba(18,32,29,.06), 0 6px 20px rgba(18,32,29,.05);
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0C1412; --surface:#141F1D; --surface-2:#1B2725;
+    --ink:#E9F0ED; --ink-2:#C2CFCB; --muted:#93A5A0; --line:#26332F;
+    --accent:#46B5A3; --accent-ink:#7FD3C4; --accent-soft:#153029;
+    --crit:#E8776D; --crit-soft:#33191A;
+    --frag:#E0AE4B; --frag-soft:#312614;
+    --slow:#78B4D8; --slow-soft:#132630;
+    --solid:#5FC69D; --solid-soft:#12291F;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0C1412; --surface:#141F1D; --surface-2:#1B2725;
+  --ink:#E9F0ED; --ink-2:#C2CFCB; --muted:#93A5A0; --line:#26332F;
+  --accent:#46B5A3; --accent-ink:#7FD3C4; --accent-soft:#153029;
+  --crit:#E8776D; --crit-soft:#33191A;
+  --frag:#E0AE4B; --frag-soft:#312614;
+  --slow:#78B4D8; --slow-soft:#132630;
+  --solid:#5FC69D; --solid-soft:#12291F;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;
+  font-size:15px; line-height:1.7; direction:rtl;
+  padding-bottom:78px;
+}
+h1,h2,h3,.disp{font-family:"Readex Pro","IBM Plex Sans Arabic",sans-serif;font-weight:500;text-wrap:balance;letter-spacing:-.01em}
+button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+@media(min-width:820px){.wrap{max-width:720px}}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:var(--ground);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:10px;height:56px}
+.brand{display:flex;align-items:baseline;gap:8px;font-family:"Readex Pro",sans-serif;font-weight:600;font-size:19px;letter-spacing:-.02em}
+.brand small{font-family:"IBM Plex Sans Arabic";font-weight:400;font-size:11px;color:var(--muted);letter-spacing:.06em}
+.top .sp{flex:1}
+.iconbtn{background:transparent;border:1px solid var(--line);border-radius:9px;width:34px;height:34px;display:grid;place-items:center;font-size:14px;color:var(--muted)}
+
+/* nav */
+.nav{position:fixed;inset-inline:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line)}
+.nav .wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+.nav button{background:transparent;border:0;padding:7px 1px 6px;border-radius:11px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:10.5px;font-weight:500;line-height:1.2;white-space:nowrap}
+.nav button .ic{font-size:17px;line-height:1}
+.nav button[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+
+/* generic */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;align-items:center;gap:10px}
+.eyebrow{font-size:11px;letter-spacing:.13em;color:var(--muted);font-weight:600;text-transform:uppercase}
+.muted{color:var(--muted)}
+.tnum{font-variant-numeric:tabular-nums}
+section{padding:18px 0 8px}
+.sechead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.sechead h2{margin:0;font-size:17px}
+.linkbtn{background:none;border:0;color:var(--accent);font-weight:600;font-size:13px;padding:2px 4px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;border:0;border-radius:11px;padding:13px 18px;font-weight:600;width:100%}
+:root[data-theme="dark"] .btn,:root:not([data-theme="light"]) .btn{color:#07110F}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .btn{color:#fff}}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn.soft{background:var(--accent-soft);color:var(--accent-ink);border:1px solid transparent}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* score block */
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.scorerow{display:flex;align-items:flex-end;gap:14px}
+.score{font-family:"Readex Pro";font-size:46px;font-weight:600;line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.scoremeta{flex:1;padding-bottom:4px}
+.bar{height:7px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:9px}
+.bar>i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:14px}
+.kpi{background:var(--surface);padding:10px 8px;text-align:center}
+.kpi b{display:block;font-family:"Readex Pro";font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.kpi span{font-size:11px;color:var(--muted)}
+
+/* heatmap */
+.heat{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:7px}
+.tile{border:1px solid var(--line);border-radius:10px;padding:9px 9px 8px;background:var(--surface);text-align:start;display:flex;flex-direction:column;gap:6px;min-height:64px}
+.tile .nm{font-size:11.5px;font-weight:500;line-height:1.35}
+.tile .pc{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.tile .mini{height:4px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:auto}
+.tile .mini>i{display:block;height:100%;border-radius:99px}
+.t-crit{background:var(--crit-soft);border-color:transparent}   .t-crit .pc{color:var(--crit)}   .t-crit .mini>i{background:var(--crit)}
+.t-frag{background:var(--frag-soft);border-color:transparent}   .t-frag .pc{color:var(--frag)}   .t-frag .mini>i{background:var(--frag)}
+.t-slow{background:var(--slow-soft);border-color:transparent}   .t-slow .pc{color:var(--slow)}   .t-slow .mini>i{background:var(--slow)}
+.t-solid{background:var(--solid-soft);border-color:transparent} .t-solid .pc{color:var(--solid)} .t-solid .mini>i{background:var(--solid)}
+.t-none .pc{color:var(--muted)} .t-none .mini>i{background:var(--line)}
+
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;color:var(--muted);margin-top:10px}
+.legend i{width:9px;height:9px;border-radius:3px;display:inline-block;margin-inline-end:5px;vertical-align:-1px}
+
+/* list rows */
+.rows{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.rw{display:flex;align-items:center;gap:11px;padding:11px 13px;border-bottom:1px solid var(--line);text-align:start;background:transparent;border-inline:0;border-top:0;width:100%}
+.rw:last-child{border-bottom:0}
+.stripe{width:4px;align-self:stretch;border-radius:99px;flex:none}
+.rw .body{flex:1;min-width:0}
+.rw .t{font-weight:500;font-size:13.5px}
+.rw .s{font-size:11.5px;color:var(--muted)}
+.rw .v{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+.chip{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--surface-2);color:var(--ink-2)}
+
+/* question */
+.qwrap{padding:14px 0 30px}
+.qbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.prog{flex:1;height:5px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.prog>i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .25s}
+.qmeta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.stem{font-size:17px;line-height:1.85;font-weight:500;margin:6px 0 4px}
+.stem .frm{display:inline-block;background:var(--surface-2);border-radius:6px;padding:1px 7px;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.passage{background:var(--surface-2);border-radius:12px;padding:13px 14px;font-size:14.5px;line-height:1.95;margin-bottom:12px}
+.conf{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:11px;margin:12px 0}
+.conf button{flex:1;background:transparent;border:0;border-radius:8px;padding:7px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.conf button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.choices{display:flex;flex-direction:column;gap:9px}
+.ch{display:flex;align-items:center;gap:11px;width:100%;text-align:start;background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:13px 13px;font-size:15px;line-height:1.6}
+.ch .k{flex:none;width:26px;height:26px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted)}
+.ch .txt{flex:1;font-variant-numeric:tabular-nums}
+.ch.ok{border-color:var(--solid);background:var(--solid-soft)} .ch.ok .k{background:var(--solid);color:#fff}
+.ch.no{border-color:var(--crit);background:var(--crit-soft)}   .ch.no .k{background:var(--crit);color:#fff}
+.ch:disabled{cursor:default;opacity:1}
+.verdict{border-radius:12px;padding:13px 14px;margin-top:14px;border:1px solid var(--line);background:var(--surface)}
+.verdict h4{margin:0 0 6px;font-size:14px;font-family:"Readex Pro";font-weight:600}
+.verdict p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.85}
+.verdict .why{margin-top:9px;font-size:12.5px;color:var(--crit);font-weight:600}
+.verdict.good{border-inline-start:4px solid var(--solid)}
+.verdict.bad{border-inline-start:4px solid var(--crit)}
+.timer{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:42px;text-align:center}
+
+/* plan */
+.week{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.week+.week{margin-top:10px}
+.week h4{margin:0;padding:11px 13px;font-size:13.5px;font-family:"Readex Pro";font-weight:600;background:var(--surface-2);display:flex;justify-content:space-between;gap:8px}
+.week h4 span{font-weight:400;font-size:11.5px;color:var(--muted)}
+.week ul{margin:0;padding:9px 28px 11px 13px;font-size:13.5px;color:var(--ink-2);line-height:1.9}
+.seg{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:12px}
+.seg button{flex:1;background:transparent;border:0;border-radius:9px;padding:9px 4px;font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.35}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+
+.empty{text-align:center;padding:26px 16px;color:var(--muted);font-size:13.5px}
+.code{width:100%;min-height:88px;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.55;direction:ltr;text-align:left;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:10px;word-break:break-all}
+.inp{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 12px;color:var(--ink);font-size:14px;font-family:inherit}
+.gbar{display:flex;align-items:center;gap:8px;font-size:12px}
+.gbar .track{flex:1;height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.gbar .track>i{display:block;height:100%;border-radius:99px}
+.gbar .lab{width:104px;flex:none;font-size:12px}
+.gbar .val{width:52px;flex:none;text-align:end;font-variant-numeric:tabular-nums;font-weight:600;font-size:12px}
+.glist{display:flex;flex-direction:column;gap:9px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table.g{border-collapse:collapse;width:100%;font-size:12.5px;min-width:430px}
+table.g th{text-align:start;font-weight:600;font-size:11px;letter-spacing:.04em;color:var(--muted);padding:9px 11px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.g td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.g tr:last-child td{border-bottom:0}
+table.g td.n{font-variant-numeric:tabular-nums;font-weight:600}
+.dot{display:inline-block;width:8px;height:8px;border-radius:3px;margin-inline-end:6px;vertical-align:0}
+.note{font-size:11.5px;color:var(--muted);line-height:1.7}
+.hidden{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">مِقياس <small>قدرات</small></div>
+    <div class="sp"></div>
+    <div id="streak" class="chip"></div>
+    <button class="iconbtn" id="themeBtn" title="تبديل المظهر" aria-label="تبديل المظهر">◐</button>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<nav class="nav" aria-label="التنقل الرئيسي">
+  <div class="wrap">
+    <button data-tab="home" aria-current="page"><span class="ic">▲</span>الرئيسية</button>
+    <button data-tab="train"><span class="ic">✎</span>تدريب</button>
+    <button data-tab="report"><span class="ic">◍</span>تقريري</button>
+    <button data-tab="plan"><span class="ic">☰</span>الخطة</button>
+    <button data-tab="group"><span class="ic">◎</span>المجموعة</button>
+  </div>
+</nav>
+
+<script>
+/* ══════════ 1. شجرة المهارات ══════════ */
+const SKILLS = [
+  // كمّي
+  {id:"ord",  sec:"q", grp:"الحساب",            name:"ترتيب العمليات",      w:3, t:55},
+  {id:"rat",  sec:"q", grp:"الحساب",            name:"النسب والتناسب",      w:5, t:65},
+  {id:"pct",  sec:"q", grp:"الحساب",            name:"النسبة المئوية",      w:5, t:70},
+  {id:"avg",  sec:"q", grp:"الحساب",            name:"المتوسط الحسابي",     w:4, t:65},
+  {id:"unt",  sec:"q", grp:"الحساب",            name:"تحويل الوحدات",       w:2, t:50},
+  {id:"spd",  sec:"q", grp:"الحساب",            name:"السرعة والزمن",       w:3, t:80},
+  {id:"age",  sec:"q", grp:"الحساب",            name:"مسائل الأعمار",       w:3, t:80},
+  {id:"eqn",  sec:"q", grp:"الجبر",             name:"المعادلات",           w:5, t:70},
+  {id:"ineq", sec:"q", grp:"الجبر",             name:"المتباينات",          w:3, t:65},
+  {id:"exp",  sec:"q", grp:"الجبر",             name:"الأسس والجذور",       w:4, t:60},
+  {id:"seq",  sec:"q", grp:"الجبر",             name:"المتتابعات والأنماط", w:3, t:60},
+  {id:"ang",  sec:"q", grp:"الهندسة",           name:"الزوايا",             w:4, t:60},
+  {id:"tri",  sec:"q", grp:"الهندسة",           name:"المثلثات",            w:4, t:70},
+  {id:"area", sec:"q", grp:"الهندسة",           name:"المساحة والمحيط",     w:5, t:70},
+  {id:"cir",  sec:"q", grp:"الهندسة",           name:"الدائرة",             w:3, t:65},
+  {id:"vol",  sec:"q", grp:"الهندسة",           name:"الحجوم",              w:2, t:70},
+  {id:"chart",sec:"q", grp:"تحليل البيانات",    name:"قراءة الرسوم",        w:4, t:60},
+  {id:"prob", sec:"q", grp:"تحليل البيانات",    name:"الاحتمالات",          w:3, t:60},
+  {id:"cmb",  sec:"q", grp:"تحليل البيانات",    name:"التباديل والتوافيق",  w:2, t:70},
+  {id:"cmp",  sec:"q", grp:"المقارنات",         name:"المقارنة الكمية",     w:6, t:60},
+  // لفظي
+  {id:"ana",  sec:"v", grp:"اللفظي",            name:"التناظر اللفظي",      w:6, t:35},
+  {id:"comp", sec:"v", grp:"اللفظي",            name:"إكمال الجمل",         w:6, t:45},
+  {id:"ctx",  sec:"v", grp:"اللفظي",            name:"الخطأ السياقي",       w:5, t:45},
+  {id:"odd",  sec:"v", grp:"اللفظي",            name:"المفردة الشاذة",      w:4, t:35},
+  {id:"read", sec:"v", grp:"اللفظي",            name:"استيعاب المقروء",     w:7, t:75},
+];
+const SK = Object.fromEntries(SKILLS.map(s=>[s.id,s]));
+
+/* أسباب الخطأ الجذرية — الوسوم التي نبني عليها تقرير «لماذا تخطئ» */
+const WHY = {
+  order:"خلط ترتيب العمليات الحسابية",
+  sign:"إهمال الإشارة السالبة",
+  ratio_inv:"عكس اتجاه النسبة",
+  pct_base:"الخلط في أساس النسبة المئوية",
+  pct_comp:"حساب الجزء المذكور بدل الباقي",
+  unit:"خطأ في تحويل الوحدات",
+  area_peri:"الخلط بين المساحة والمحيط",
+  half:"نسيان القسمة على ٢",
+  rad_diam:"الخلط بين نصف القطر والقطر",
+  avg_sum:"الخلط بين المجموع والمتوسط",
+  read_chart:"قراءة خاطئة من الرسم",
+  prob_comp:"حساب المتمّم بدل الحدث نفسه",
+  partial:"التوقف قبل إكمال الحل",
+  exp_rule:"خطأ في قوانين الأسس",
+  seq_rule:"استنتاج نمط خاطئ",
+  angle_sum:"خطأ في مجموع الزوايا",
+  insufficient:"الحكم بعدم كفاية المعطيات خطأً",
+  relation:"علاقة تناظر غير دقيقة",
+  context:"تجاهل سياق الجملة",
+  opposite:"اختيار الضدّ بدل المطلوب",
+  detail:"الاعتماد على تفصيل جانبي",
+  overreach:"استنتاج غير مذكور في النص",
+  vocab:"عدم دقة في معنى المفردة",
+};
+
+/* ══════════ 2. بنك الأسئلة ══════════
+   q=نص السؤال، c=الخيارات، a=رقم الإجابة الصحيحة،
+   m=سبب الخطأ لكل خيار، e=الشرح، d=الصعوبة (1-3) */
+const Q = [
+/* ───── ترتيب العمليات ───── */
+{s:"ord",q:"أوجد ناتج: 5 + 7 × (11 − 8)² ÷ 3 − 4",c:["22","32","26","15"],a:0,m:[null,"order","partial","exp_rule"],e:"الأقواس أولاً: (11−8)=3، ثم الأس: 3²=9. ثم الضرب والقسمة من اليمين لليسار: 7×9=63، و63÷3=21. أخيراً الجمع والطرح: 5+21−4 = 22.",d:2},
+{s:"ord",q:"أوجد ناتج: 12 − 4 × 2 + 6 ÷ 3",c:["6","18","10","2"],a:0,m:[null,"order","partial","sign"],e:"الضرب والقسمة قبل الجمع والطرح: 4×2=8، و6÷3=2. يصبح المقدار 12−8+2 = 6.",d:1},
+{s:"ord",q:"أوجد ناتج: (8 + 4) ÷ 2² − 3",c:["0","3","6","9"],a:0,m:[null,"partial","order","exp_rule"],e:"القوس: 8+4=12. الأس: 2²=4. القسمة: 12÷4=3. الطرح: 3−3 = 0.",d:2},
+{s:"ord",q:"أوجد ناتج: 3² + 4 × 2 − 10 ÷ 5",c:["15","24","12","11"],a:0,m:[null,"order","exp_rule","partial"],e:"3²=9، و4×2=8، و10÷5=2. إذن 9+8−2 = 15.",d:1},
+{s:"ord",q:"أوجد ناتج: 20 − (3 + 2) × 3",c:["5","45","11","15"],a:0,m:[null,"order","partial","sign"],e:"القوس أولاً: 3+2=5، ثم الضرب: 5×3=15، ثم الطرح: 20−15 = 5. لا تطرح 20−5 قبل الضرب.",d:1},
+
+/* ───── النسب والتناسب ───── */
+{s:"rat",q:"إذا كانت نسبة عدد الأولاد إلى البنات في فصل 3 : 5، وعدد البنات 20، فكم عدد الأولاد؟",c:["12","33","15","32"],a:0,m:[null,"ratio_inv","partial","avg_sum"],e:"كل 5 بنات يقابلهن 3 أولاد. 20 ÷ 5 = 4 مجموعات، إذن الأولاد = 3 × 4 = 12.",d:1},
+{s:"rat",q:"وُزّع مبلغ 720 ريالاً بين ثلاثة أشخاص بنسبة 2 : 3 : 4. كم نصيب صاحب النصيب الأكبر؟",c:["320","240","360","180"],a:0,m:[null,"partial","ratio_inv","pct_base"],e:"مجموع أجزاء النسبة = 2+3+4 = 9. قيمة الجزء = 720 ÷ 9 = 80. النصيب الأكبر = 4 × 80 = 320.",d:2},
+{s:"rat",q:"إذا كان 4 عمال ينجزون عملاً في 15 يوماً، ففي كم يوماً ينجزه 6 عمال بنفس المعدل؟",c:["10","22","9","12"],a:0,m:[null,"ratio_inv","partial","avg_sum"],e:"تناسب عكسي: العمل الكلي = 4 × 15 = 60 يوم‑عامل. مع 6 عمال: 60 ÷ 6 = 10 أيام. كلما زاد العمال قلّ الزمن.",d:2},
+{s:"rat",q:"خريطة مقياس رسمها 1 : 200000. المسافة بين مدينتين عليها 7 سم. كم المسافة الحقيقية بالكيلومترات؟",c:["14","1400","140","7"],a:0,m:[null,"unit","unit","ratio_inv"],e:"7 × 200000 = 1,400,000 سم. والكيلومتر = 100,000 سم، إذن 1,400,000 ÷ 100,000 = 14 كم.",d:3},
+{s:"rat",q:"إذا كانت س : ص = 2 : 7، وكان مجموعهما 45، فما قيمة ص؟",c:["35","10","28","21"],a:0,m:[null,"ratio_inv","partial","partial"],e:"مجموع الأجزاء = 2+7 = 9، وقيمة الجزء = 45 ÷ 9 = 5. إذن ص = 7 × 5 = 35.",d:1},
+
+/* ───── النسبة المئوية ───── */
+{s:"pct",q:"سلعة سعرها 250 ريالاً، خُفّض سعرها 20% ثم أُضيف 15% ضريبة على السعر الجديد. كم السعر النهائي؟",c:["230","245","215","250"],a:0,m:[null,"pct_base","partial","pct_base"],e:"بعد الخصم: 250 × 0.80 = 200. بعد الضريبة: 200 × 1.15 = 230 ريالاً. الضريبة تُحسب على السعر بعد الخصم لا قبله.",d:3},
+{s:"pct",q:"إذا كان 30% من عدد يساوي 45، فما ذلك العدد؟",c:["150","135","75","90"],a:0,m:[null,"pct_base","partial","pct_base"],e:"العدد = 45 ÷ 0.30 = 150. تحقّق: 30% من 150 = 45. ✔",d:1},
+{s:"pct",q:"زاد عدد طلاب مدرسة من 400 إلى 460 طالباً. كم نسبة الزيادة؟",c:["15%","13%","60%","6%"],a:0,m:[null,"pct_base","partial","unit"],e:"مقدار الزيادة = 460 − 400 = 60. نسبة الزيادة = 60 ÷ 400 = 0.15 = 15%. المقام دائماً هو القيمة الأصلية.",d:2},
+{s:"pct",q:"في مزرعة 80 شجرة، 25% منها نخيل والباقي زيتون. كم عدد أشجار الزيتون؟",c:["60","20","55","40"],a:0,m:[null,"pct_comp","partial","pct_base"],e:"النخيل = 25% × 80 = 20. الزيتون = 80 − 20 = 60 شجرة (أو مباشرة 75% × 80 = 60).",d:1},
+{s:"pct",q:"طالبة حصلت على 68 درجة من 80. ما نسبة درجتها؟",c:["85%","80%","75%","88%"],a:0,m:[null,"partial","pct_base","partial"],e:"68 ÷ 80 = 0.85 = 85%.",d:1},
+
+/* ───── المتوسط الحسابي ───── */
+{s:"avg",q:"متوسط درجات 5 طالبات هو 82. إذا انضمت طالبة سادسة بدرجة 94، فما المتوسط الجديد؟",c:["84","88","83","86"],a:0,m:[null,"avg_sum","partial","avg_sum"],e:"مجموع الخمس = 5 × 82 = 410. بإضافة 94 يصبح المجموع 504، والمتوسط = 504 ÷ 6 = 84.",d:2},
+{s:"avg",q:"متوسط ثلاثة أعداد 12. إذا كان اثنان منها 8 و15، فما العدد الثالث؟",c:["13","11","36","23"],a:0,m:[null,"partial","avg_sum","avg_sum"],e:"المجموع = 3 × 12 = 36. العدد الثالث = 36 − (8+15) = 36 − 23 = 13.",d:1},
+{s:"avg",q:"متوسط أعمار 4 إخوة 14 سنة. ما مجموع أعمارهم؟",c:["56","18","3.5","48"],a:0,m:[null,"avg_sum","avg_sum","partial"],e:"المجموع = المتوسط × العدد = 14 × 4 = 56 سنة.",d:1},
+{s:"avg",q:"متوسط 10 أعداد هو 20. حُذف منها العدد 38. ما متوسط الأعداد المتبقية؟",c:["18","20","16","22"],a:0,m:[null,"partial","avg_sum","sign"],e:"المجموع = 10 × 20 = 200. بعد الحذف: 200 − 38 = 162، وعدد الأعداد 9، فالمتوسط = 162 ÷ 9 = 18.",d:3},
+{s:"avg",q:"ما وسيط الأعداد: 7 ، 3 ، 11 ، 5 ، 9 ؟",c:["7","5","9","6"],a:0,m:[null,"partial","partial","avg_sum"],e:"نرتّبها أولاً: 3 ، 5 ، 7 ، 9 ، 11. الوسيط هو القيمة الوسطى = 7. (الترتيب خطوة إلزامية.)",d:1},
+
+/* ───── تحويل الوحدات ───── */
+{s:"unt",q:"قارن بين القيمتين: القيمة الأولى 1.7 متر — القيمة الثانية 170 سم",c:["القيمتان متساويتان","القيمة الأولى أكبر","القيمة الثانية أكبر","المعطيات غير كافية"],a:0,m:[null,"unit","unit","insufficient"],e:"المتر = 100 سم، إذن 1.7 م = 170 سم. القيمتان متساويتان.",d:1},
+{s:"unt",q:"كم دقيقة في ساعتين وربع؟",c:["135","125","145","150"],a:0,m:[null,"unit","partial","unit"],e:"الساعة = 60 دقيقة. ساعتان = 120 دقيقة، والربع = 15 دقيقة. المجموع = 135 دقيقة.",d:1},
+{s:"unt",q:"إذا كان وزن صندوق 2.5 كجم، فكم يزن بالغرام؟",c:["2500","250","25000","25"],a:0,m:[null,"unit","unit","unit"],e:"الكيلوغرام = 1000 غرام، إذن 2.5 × 1000 = 2500 غرام.",d:1},
+{s:"unt",q:"مساحة غرفة 3 م × 4 م. كم مساحتها بالسنتيمتر المربع؟",c:["120000","1200","12000","120"],a:0,m:[null,"unit","unit","unit"],e:"المساحة = 12 م². والمتر المربع = 100 × 100 = 10,000 سم². إذن 12 × 10,000 = 120,000 سم². انتبه: التحويل في المساحة يُربّع.",d:3},
+
+/* ───── السرعة والزمن ───── */
+{s:"spd",q:"انطلق محمد بسرعة 100 كم/س، وبعد ساعة انطلق إبراهيم خلفه من نفس النقطة بسرعة 125 كم/س. بعد كم ساعة من انطلاق إبراهيم يلتقيان؟",c:["4","1","3","5"],a:0,m:[null,"partial","partial","partial"],e:"يسبقه محمد بـ100 كم. فرق السرعة = 125 − 100 = 25 كم/س. زمن اللحاق = 100 ÷ 25 = 4 ساعات.",d:3},
+{s:"spd",q:"قطع سائق 240 كم في 3 ساعات. ما سرعته المتوسطة؟",c:["80 كم/س","720 كم/س","60 كم/س","120 كم/س"],a:0,m:[null,"ratio_inv","partial","partial"],e:"السرعة = المسافة ÷ الزمن = 240 ÷ 3 = 80 كم/س.",d:1},
+{s:"spd",q:"إذا سار شخص بسرعة 5 كم/س، فكم يقطع في ساعة ونصف؟",c:["7.5 كم","6.5 كم","10 كم","3.3 كم"],a:0,m:[null,"partial","partial","ratio_inv"],e:"المسافة = السرعة × الزمن = 5 × 1.5 = 7.5 كم.",d:1},
+{s:"spd",q:"سيارة تقطع 90 كم في ساعة. كم تحتاج من الدقائق لتقطع 30 كم؟",c:["20","30","45","15"],a:0,m:[null,"ratio_inv","partial","partial"],e:"30 كم هي ثلث الـ90 كم، والزمن = ثلث الساعة = 20 دقيقة.",d:2},
+
+/* ───── مسائل الأعمار ───── */
+{s:"age",q:"رجل عمره 60 سنة وله ابنان، عمر الأكبر يزيد على عمر الأصغر بـ4 سنوات. إذا كان مجموع عمري الابنين يساوي ثلثي عمر والدهما، فما عمر الابن الأكبر؟",c:["22","18","24","20"],a:0,m:[null,"partial","partial","partial"],e:"مجموع عمريهما = ⅔ × 60 = 40. إذا كان الأصغر س، فإن س + (س+4) = 40 ⇒ 2س = 36 ⇒ س = 18. الأكبر = 18 + 4 = 22.",d:3},
+{s:"age",q:"عمر أحمد ضعف عمر أخيه، ومجموع عمريهما 27 سنة. كم عمر أحمد؟",c:["18","9","13.5","20"],a:0,m:[null,"ratio_inv","avg_sum","partial"],e:"إذا كان عمر الأخ س، فإن س + 2س = 27 ⇒ 3س = 27 ⇒ س = 9. عمر أحمد = 2 × 9 = 18 سنة.",d:1},
+{s:"age",q:"عمر سارة الآن 12 سنة. بعد كم سنة يصبح عمرها ضعف عمرها الحالي؟",c:["12","24","6","10"],a:0,m:[null,"partial","partial","partial"],e:"الضعف = 24 سنة. عدد السنوات = 24 − 12 = 12 سنة.",d:1},
+{s:"age",q:"عمر الأب يزيد على عمر ابنه بـ30 سنة، وبعد 5 سنوات يصبح عمر الأب ثلاثة أمثال عمر ابنه. كم عمر الابن الآن؟",c:["10","15","12","5"],a:0,m:[null,"partial","partial","partial"],e:"ليكن عمر الابن س، فالأب س+30. بعد 5 سنوات: س+35 = 3(س+5) ⇒ س+35 = 3س+15 ⇒ 20 = 2س ⇒ س = 10 سنوات.",d:3},
+
+/* ───── المعادلات ───── */
+{s:"eqn",q:"إذا كان 3س − 7 = 14، فما قيمة س؟",c:["7","21","2.3","3"],a:0,m:[null,"sign","partial","partial"],e:"نضيف 7 للطرفين: 3س = 21، ثم نقسم على 3: س = 7.",d:1},
+{s:"eqn",q:"إذا كان 5س + 2 = 3س + 12، فما قيمة س؟",c:["5","7","3","2"],a:0,m:[null,"sign","partial","partial"],e:"ننقل المتغيرات لطرف والأعداد لطرف: 5س − 3س = 12 − 2 ⇒ 2س = 10 ⇒ س = 5.",d:2},
+{s:"eqn",q:"إذا كان 2(س + 3) = 4س − 2، فما قيمة س؟",c:["4","2","−4","1"],a:0,m:[null,"partial","sign","partial"],e:"نفكّ القوس: 2س + 6 = 4س − 2 ⇒ 6 + 2 = 4س − 2س ⇒ 8 = 2س ⇒ س = 4.",d:2},
+{s:"eqn",q:"إذا كان س + ص = 10 و س − ص = 4، فما قيمة س؟",c:["7","6","3","5"],a:0,m:[null,"partial","partial","avg_sum"],e:"بجمع المعادلتين: 2س = 14 ⇒ س = 7 (وص = 3).",d:2},
+{s:"eqn",q:"إذا كان (س ÷ 4) + 5 = 11، فما قيمة س؟",c:["24","16","64","6"],a:0,m:[null,"partial","exp_rule","partial"],e:"نطرح 5: س ÷ 4 = 6، ثم نضرب في 4: س = 24.",d:1},
+
+/* ───── المتباينات ───── */
+{s:"ineq",q:"إذا كان 2س + 1 < 9، فأي القيم التالية لا تحقّق المتباينة؟",c:["4","3","1","0"],a:0,m:[null,"sign","partial","partial"],e:"2س < 8 ⇒ س < 4. إذن كل قيمة أصغر من 4 تحقّقها، والعدد 4 نفسه لا يحقّقها لأن الإشارة «أصغر من» بدون تساوٍ.",d:2},
+{s:"ineq",q:"إذا كان −3س > 12، فما مجموعة الحل؟",c:["س < −4","س > −4","س > 4","س < 4"],a:0,m:[null,"sign","sign","sign"],e:"عند القسمة على عدد سالب تنعكس إشارة المتباينة: س < −4. هذه أشهر نقطة يخطئ فيها الطلاب.",d:3},
+{s:"ineq",q:"إذا كان 5 ≤ س ≤ 9 و 2 ≤ ص ≤ 4، فما أكبر قيمة ممكنة للمقدار س − ص؟",c:["7","5","13","3"],a:0,m:[null,"partial","sign","partial"],e:"لتكبير الفرق نأخذ أكبر س وأصغر ص: 9 − 2 = 7.",d:3},
+{s:"ineq",q:"عدد صحيح موجب يحقّق 3س − 2 < 10. ما أكبر قيمة له؟",c:["3","4","2","5"],a:0,m:[null,"sign","partial","partial"],e:"3س < 12 ⇒ س < 4. أكبر عدد صحيح موجب أصغر من 4 هو 3.",d:2},
+
+/* ───── الأسس والجذور ───── */
+{s:"exp",q:"أوجد ناتج: 2³ × 2⁴",c:["2⁷","2¹²","4⁷","2⁵"],a:0,m:[null,"exp_rule","exp_rule","exp_rule"],e:"عند ضرب أسس لنفس الأساس تُجمع الأُسس: 2³ × 2⁴ = 2⁷.",d:1},
+{s:"exp",q:"أوجد ناتج: 3⁵ ÷ 3²",c:["27","9","243","6"],a:0,m:[null,"exp_rule","partial","exp_rule"],e:"عند القسمة تُطرح الأسس: 3⁵⁻² = 3³ = 27.",d:2},
+{s:"exp",q:"أوجد قيمة: √144 + √25",c:["17","13","169","12"],a:0,m:[null,"partial","exp_rule","partial"],e:"√144 = 12، و√25 = 5، والمجموع = 17. لا يجوز جمع ما تحت الجذرين.",d:1},
+{s:"exp",q:"ما قيمة (−2)⁴ ؟",c:["16","−16","8","−8"],a:0,m:[null,"sign","exp_rule","sign"],e:"الأس زوجي فالناتج موجب: (−2)×(−2)×(−2)×(−2) = 16.",d:2},
+{s:"exp",q:"ما قيمة 5⁰ + 4¹ ؟",c:["5","4","9","1"],a:0,m:[null,"exp_rule","exp_rule","partial"],e:"أي عدد (غير الصفر) مرفوع للأس صفر يساوي 1، و4¹ = 4. إذن 1 + 4 = 5.",d:1},
+
+/* ───── المتتابعات ───── */
+{s:"seq",q:"أكمل النمط: 3 ، 6 ، 12 ، 24 ، ... ؟",c:["48","30","36","72"],a:0,m:[null,"seq_rule","seq_rule","seq_rule"],e:"كل حد = الحد السابق × 2. إذن 24 × 2 = 48.",d:1},
+{s:"seq",q:"أكمل النمط: 2 ، 5 ، 10 ، 17 ، ... ؟",c:["26","24","28","22"],a:0,m:[null,"seq_rule","seq_rule","seq_rule"],e:"الفروق: 3، 5، 7 ... تزيد 2 في كل مرة. الفرق التالي 9، إذن 17 + 9 = 26.",d:3},
+{s:"seq",q:"أكمل النمط: 100 ، 92 ، 84 ، 76 ، ... ؟",c:["68","70","72","64"],a:0,m:[null,"seq_rule","seq_rule","seq_rule"],e:"النمط نقصان ثابت بمقدار 8: 76 − 8 = 68.",d:1},
+{s:"seq",q:"أكمل النمط: 1 ، 4 ، 9 ، 16 ، ... ؟",c:["25","20","24","36"],a:0,m:[null,"seq_rule","seq_rule","seq_rule"],e:"هذه مربعات الأعداد: 1²، 2²، 3²، 4² ... والتالي 5² = 25.",d:2},
+
+/* ───── الزوايا ───── */
+{s:"ang",q:"مستقيمان متقاطعان، إحدى الزوايا الناتجة قياسها 50°. ما قياس الزاوية المجاورة لها على المستقيم؟",c:["130°","50°","40°","90°"],a:0,m:[null,"angle_sum","angle_sum","angle_sum"],e:"الزاويتان على استقامة واحدة مجموعهما 180°. إذن 180 − 50 = 130°.",d:1},
+{s:"ang",q:"زاويتان متتامّتان، إحداهما 35°. ما قياس الأخرى؟",c:["55°","145°","65°","35°"],a:0,m:[null,"angle_sum","partial","angle_sum"],e:"المتتامّتان مجموعهما 90°: 90 − 35 = 55°. (المتكاملتان مجموعهما 180°.)",d:1},
+{s:"ang",q:"في الشكل، ثلاث زوايا حول نقطة واحدة قياساتها: 120° ، 95° ، وس. ما قيمة س؟",c:["145°","85°","55°","145.5°"],a:0,m:[null,"angle_sum","angle_sum","partial"],e:"مجموع الزوايا حول نقطة = 360°. إذن س = 360 − (120 + 95) = 145°.",d:2},
+{s:"ang",q:"زاويتان متقابلتان بالرأس، قياس الأولى (2س + 10)° وقياس الثانية 70°. ما قيمة س؟",c:["30","40","35","25"],a:0,m:[null,"angle_sum","partial","partial"],e:"المتقابلتان بالرأس متساويتان: 2س + 10 = 70 ⇒ 2س = 60 ⇒ س = 30.",d:2},
+
+/* ───── المثلثات ───── */
+{s:"tri",q:"في مثلث، قياس زاويتين 65° و45°. ما قياس الزاوية الثالثة؟",c:["70°","80°","110°","60°"],a:0,m:[null,"angle_sum","angle_sum","angle_sum"],e:"مجموع زوايا المثلث 180°: 180 − (65 + 45) = 70°.",d:1},
+{s:"tri",q:"مثلث قائم الزاوية طولا ضلعي القائمة فيه 6 سم و8 سم. ما طول الوتر؟",c:["10 سم","14 سم","12 سم","7 سم"],a:0,m:[null,"exp_rule","partial","avg_sum"],e:"بنظرية فيثاغورس: الوتر² = 6² + 8² = 36 + 64 = 100، إذن الوتر = 10 سم.",d:2},
+{s:"tri",q:"مثلث متساوي الساقين، زاوية الرأس فيه 40°. ما قياس كل من زاويتي القاعدة؟",c:["70°","40°","100°","50°"],a:0,m:[null,"angle_sum","half","angle_sum"],e:"مجموع زاويتي القاعدة = 180 − 40 = 140°، وهما متساويتان، إذن كل واحدة = 140 ÷ 2 = 70°.",d:2},
+{s:"tri",q:"مثلث قاعدته 12 سم وارتفاعه 5 سم. ما مساحته؟",c:["30 سم²","60 سم²","17 سم²","34 سم²"],a:0,m:[null,"half","avg_sum","area_peri"],e:"مساحة المثلث = ½ × القاعدة × الارتفاع = ½ × 12 × 5 = 30 سم². لا تنسَ القسمة على 2.",d:1},
+
+/* ───── المساحة والمحيط ───── */
+{s:"area",q:"مربع طول ضلعه 6 سم ومستطيل طول ضلعه 3 سم ومساحته 36 سم². قارن بين: القيمة الأولى محيط المربع — القيمة الثانية محيط المستطيل",c:["القيمة الثانية أكبر","القيمة الأولى أكبر","القيمتان متساويتان","المعطيات غير كافية"],a:0,m:[null,"area_peri","partial","insufficient"],e:"محيط المربع = 4 × 6 = 24 سم. المستطيل: العرض 3 والمساحة 36 ⇒ الطول = 12، فمحيطه = 2(12+3) = 30 سم. إذن الثانية أكبر.",d:3},
+{s:"area",q:"مستطيل طوله 9 سم وعرضه 4 سم. ما مساحته؟",c:["36 سم²","26 سم²","13 سم²","18 سم²"],a:0,m:[null,"area_peri","avg_sum","half"],e:"مساحة المستطيل = الطول × العرض = 9 × 4 = 36 سم². (26 هو المحيط.)",d:1},
+{s:"area",q:"مربع مساحته 49 سم². ما محيطه؟",c:["28 سم","196 سم","14 سم","24.5 سم"],a:0,m:[null,"area_peri","half","area_peri"],e:"طول الضلع = √49 = 7 سم. المحيط = 4 × 7 = 28 سم.",d:2},
+{s:"area",q:"إذا تضاعف طول ضلع مربع، فماذا يحدث لمساحته؟",c:["تصبح 4 أمثالها","تتضاعف","تصبح 3 أمثالها","لا تتغير"],a:0,m:[null,"area_peri","seq_rule","area_peri"],e:"المساحة = ض². عند مضاعفة الضلع تصبح (2ض)² = 4ض²، أي أربعة أمثال المساحة الأصلية.",d:3},
+{s:"area",q:"غرفة أبعادها 5 م × 4 م، ويُراد تبليطها ببلاط مساحة القطعة الواحدة 0.25 م². كم قطعة نحتاج؟",c:["80","20","50","5"],a:0,m:[null,"ratio_inv","partial","unit"],e:"مساحة الغرفة = 20 م². عدد القطع = 20 ÷ 0.25 = 80 قطعة.",d:2},
+
+/* ───── الدائرة ───── */
+{s:"cir",q:"دائرة نصف قطرها 7 سم. ما محيطها؟ (π ≈ 22/7)",c:["44 سم","154 سم","22 سم","88 سم"],a:0,m:[null,"area_peri","half","rad_diam"],e:"المحيط = 2πنق = 2 × (22/7) × 7 = 44 سم. (154 هي المساحة.)",d:2},
+{s:"cir",q:"دائرة قطرها 10 سم. ما مساحتها؟ (π ≈ 3.14)",c:["78.5 سم²","314 سم²","31.4 سم²","157 سم²"],a:0,m:[null,"rad_diam","area_peri","half"],e:"نصف القطر = 10 ÷ 2 = 5 سم. المساحة = π نق² = 3.14 × 25 = 78.5 سم². الخطأ الشائع استخدام القطر بدل نصف القطر.",d:3},
+{s:"cir",q:"إذا كان محيط دائرة 31.4 سم، فما طول نصف قطرها؟ (π ≈ 3.14)",c:["5 سم","10 سم","15.7 سم","2.5 سم"],a:0,m:[null,"rad_diam","half","half"],e:"المحيط = 2πنق ⇒ 31.4 = 2 × 3.14 × نق ⇒ نق = 31.4 ÷ 6.28 = 5 سم.",d:2},
+{s:"cir",q:"ما قياس الزاوية المركزية التي يقابلها ربع محيط الدائرة؟",c:["90°","45°","180°","120°"],a:0,m:[null,"half","angle_sum","angle_sum"],e:"الدائرة كاملة 360°، والربع = 360 ÷ 4 = 90°.",d:1},
+
+/* ───── الحجوم ───── */
+{s:"vol",q:"مكعب طول حرفه 4 سم. ما حجمه؟",c:["64 سم³","16 سم³","48 سم³","12 سم³"],a:0,m:[null,"exp_rule","area_peri","partial"],e:"حجم المكعب = الحرف³ = 4 × 4 × 4 = 64 سم³. (48 هي المساحة الكلية للسطح.)",d:1},
+{s:"vol",q:"متوازي مستطيلات أبعاده 5 × 3 × 2 سم. ما حجمه؟",c:["30 سم³","10 سم³","62 سم³","15 سم³"],a:0,m:[null,"avg_sum","area_peri","partial"],e:"الحجم = الطول × العرض × الارتفاع = 5 × 3 × 2 = 30 سم³.",d:1},
+{s:"vol",q:"خزان على شكل متوازي مستطيلات قاعدته 2 م × 3 م وارتفاعه 1.5 م. كم لتراً يسع؟ (1 م³ = 1000 لتر)",c:["9000","900","90","9"],a:0,m:[null,"unit","unit","unit"],e:"الحجم = 2 × 3 × 1.5 = 9 م³، وبالليتر = 9 × 1000 = 9000 لتر.",d:3},
+
+/* ───── قراءة الرسوم ───── */
+{s:"chart",q:"يمثّل رسم بياني بالأعمدة عدد المواشي عند نايف وأحمد: الأغنام (نايف 9، أحمد 6)، الأبقار (نايف 4، أحمد 5)، الضأن (نايف 7، أحمد 8). ما الفرق بين عدد الأغنام عند نايف وعددها عند أحمد؟",c:["3","1","4","15"],a:0,m:[null,"read_chart","read_chart","avg_sum"],e:"نقرأ عمود الأغنام فقط: نايف 9، أحمد 6. الفرق = 9 − 6 = 3. لا تخلط بين الأغنام والضأن.",d:2},
+{s:"chart",q:"عوائد سوق استثماري بالمليون: 2003 → 4 ، 2004 → 11 ، 2005 → 7 ، 2006 → 9. في أي عام كان أقل عائد؟",c:["2003","2004","2005","2006"],a:0,m:[null,"read_chart","read_chart","read_chart"],e:"أصغر قيمة هي 4 وتقابل عام 2003. انتبه: السؤال عن الأقل لا الأعلى.",d:1},
+{s:"chart",q:"درجات خمس طالبات: 45 ، 70 ، 60 ، 95 ، 55. ما الفرق بين أعلى درجة وأقلها؟",c:["50","40","25","95"],a:0,m:[null,"read_chart","read_chart","partial"],e:"أعلى درجة 95 وأقل درجة 45. الفرق = 95 − 45 = 50.",d:1},
+{s:"chart",q:"في قطاع دائري: الرياضيات 30% ، العلوم 25% ، اللغة 20% ، والباقي أنشطة. إذا كان العدد الكلي 400 طالب، فكم عدد طلاب الأنشطة؟",c:["100","75","120","80"],a:0,m:[null,"pct_base","read_chart","pct_base"],e:"نسبة الأنشطة = 100 − (30+25+20) = 25%. العدد = 25% × 400 = 100 طالب.",d:3},
+
+/* ───── الاحتمالات ───── */
+{s:"prob",q:"عند رمي مكعب أرقام (نرد) مرة واحدة، ما احتمال ظهور عدد فردي؟",c:["1/2","1/3","1/6","2/3"],a:0,m:[null,"prob_comp","partial","prob_comp"],e:"الأعداد الفردية على النرد: 1، 3، 5 — أي 3 من أصل 6. الاحتمال = 3/6 = 1/2.",d:1},
+{s:"prob",q:"في كيس 5 كرات حمراء و3 خضراء وكرتان زرقاوان. ما احتمال سحب كرة خضراء؟",c:["3/10","3/7","1/3","7/10"],a:0,m:[null,"prob_comp","partial","prob_comp"],e:"العدد الكلي = 5 + 3 + 2 = 10. الاحتمال = 3/10.",d:2},
+{s:"prob",q:"عند رمي قطعة نقود مرتين، ما احتمال ظهور صورة في المرتين؟",c:["1/4","1/2","2/4","1/3"],a:0,m:[null,"prob_comp","partial","partial"],e:"الاحتمالات الممكنة 4 (صص، صك، كص، كك)، والمطلوب حالة واحدة = 1/4. (أو ½ × ½.)",d:2},
+{s:"prob",q:"إذا كان احتمال نجاح طالب 0.75، فما احتمال عدم نجاحه؟",c:["0.25","0.75","1.75","0.5"],a:0,m:[null,"prob_comp","partial","partial"],e:"احتمال الحدث المتمّم = 1 − 0.75 = 0.25.",d:1},
+
+/* ───── التباديل والتوافيق ───── */
+{s:"cmb",q:"بكم طريقة يمكن ترتيب 4 كتب مختلفة على رفّ؟",c:["24","12","16","4"],a:0,m:[null,"partial","exp_rule","partial"],e:"عدد الترتيبات = 4! = 4 × 3 × 2 × 1 = 24 طريقة.",d:2},
+{s:"cmb",q:"في مطعم 3 أنواع من الشوربة و4 أنواع من الأطباق الرئيسية. كم وجبة مختلفة (شوربة + طبق) يمكن تكوينها؟",c:["12","7","34","24"],a:0,m:[null,"avg_sum","partial","partial"],e:"بقاعدة الضرب: 3 × 4 = 12 وجبة مختلفة.",d:1},
+{s:"cmb",q:"كم رقماً مكوّناً من خانتين يمكن تكوينه من الأرقام 1، 2، 3 دون تكرار الرقم؟",c:["6","9","3","12"],a:0,m:[null,"partial","partial","partial"],e:"للخانة الأولى 3 اختيارات، وللثانية 2 (لعدم التكرار): 3 × 2 = 6 أعداد.",d:2},
+
+/* ───── المقارنة الكمية ───── */
+{s:"cmp",q:"قارن بين: القيمة الأولى = (3 + 4)² — القيمة الثانية = 3² + 4²",c:["القيمة الأولى أكبر","القيمة الثانية أكبر","القيمتان متساويتان","المعطيات غير كافية"],a:0,m:[null,"exp_rule","exp_rule","insufficient"],e:"الأولى = 7² = 49، والثانية = 9 + 16 = 25. إذن الأولى أكبر. تذكّر أن (أ+ب)² ≠ أ² + ب².",d:2},
+{s:"cmp",q:"إذا كان س عدداً حقيقياً، قارن بين: القيمة الأولى = س² — القيمة الثانية = س",c:["المعطيات غير كافية","القيمة الأولى أكبر","القيمة الثانية أكبر","القيمتان متساويتان"],a:0,m:[null,"insufficient","insufficient","insufficient"],e:"لو س = 3 فالأولى أكبر، ولو س = 0.5 فالثانية أكبر، ولو س = 1 تساويتا. النتيجة تتغير، إذن المعطيات غير كافية.",d:3},
+{s:"cmp",q:"قارن بين: القيمة الأولى = 25% من 80 — القيمة الثانية = 80% من 25",c:["القيمتان متساويتان","القيمة الأولى أكبر","القيمة الثانية أكبر","المعطيات غير كافية"],a:0,m:[null,"pct_base","pct_base","insufficient"],e:"الأولى = 20، والثانية = 20. متساويتان — لأن الضرب تبديلي.",d:2},
+{s:"cmp",q:"في مثلث أ ب ج، قارن بين: القيمة الأولى = مجموع زواياه — القيمة الثانية = 180°",c:["القيمتان متساويتان","القيمة الأولى أكبر","القيمة الثانية أكبر","المعطيات غير كافية"],a:0,m:[null,"angle_sum","angle_sum","insufficient"],e:"مجموع زوايا أي مثلث = 180° دائماً، فالقيمتان متساويتان مهما كان نوع المثلث.",d:1},
+{s:"cmp",q:"إذا كان س > 0، قارن بين: القيمة الأولى = س ÷ 2 — القيمة الثانية = س × 2",c:["القيمة الثانية أكبر","القيمة الأولى أكبر","القيمتان متساويتان","المعطيات غير كافية"],a:0,m:[null,"ratio_inv","partial","insufficient"],e:"ما دام س موجباً فإن ضربه في 2 يعطي دائماً أكبر من قسمته على 2.",d:2},
+
+/* ───── التناظر اللفظي ───── */
+{s:"ana",q:"قلم : كتابة",c:["مقص : قص","ورق : كتاب","يد : إصبع","معلم : مدرسة"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: أداة ووظيفتها. القلم أداة للكتابة، والمقص أداة للقص. أما «ورق : كتاب» فعلاقة مادة بمنتج.",d:1},
+{s:"ana",q:"جوع : طعام",c:["عطش : ماء","مرض : ألم","نوم : ليل","برد : شتاء"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: حاجة وما يزيلها. الجوع يزيله الطعام، والعطش يزيله الماء.",d:1},
+{s:"ana",q:"ذهب : معدن",c:["ورد : زهرة","خاتم : ذهب","حديد : صدأ","فضة : لمعان"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: نوع وجنسه (الذهب نوع من المعادن). كذلك الورد نوع من الزهور. أما «خاتم : ذهب» فعلاقة منتج بمادته.",d:2},
+{s:"ana",q:"جبان : شجاعة",c:["بخيل : كرم","كريم : عطاء","قوي : بأس","عالم : معرفة"],a:0,m:[null,"opposite","opposite","opposite"],e:"العلاقة: صفة وما تفتقده. الجبان يفتقد الشجاعة، والبخيل يفتقد الكرم. بقية الخيارات صفة وما تملكه — عكس المطلوب.",d:3},
+{s:"ana",q:"سنبلة : حقل",c:["نجمة : سماء","سمكة : شبكة","طائر : قفص","شجرة : خشب"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: شيء وموطنه الطبيعي. السنبلة موطنها الحقل، والنجمة موطنها السماء. أما القفص والشبكة فأماكن حصر لا موطن طبيعي.",d:3},
+{s:"ana",q:"طبيب : مستشفى",c:["قاضٍ : محكمة","مريض : دواء","مهندس : بناء","تاجر : ربح"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: مهنة ومكان مزاولتها. الطبيب في المستشفى، والقاضي في المحكمة.",d:1},
+
+/* ───── إكمال الجمل ───── */
+{s:"comp",q:"لم يكن نجاحه وليد الصدفة، بل ثمرة ......... طويل و......... لا يعرف الملل.",c:["جهدٍ — صبرٍ","حظٍّ — يأسٍ","كسلٍ — تردّدٍ","انتظارٍ — شكوى"],a:0,m:[null,"context","context","context"],e:"«بل» تدل على نفي الصدفة وإثبات ضدها، والسياق يطلب صفتين إيجابيتين: الجهد والصبر.",d:1},
+{s:"comp",q:"كان المتحدث ......... في عرضه، فلم يترك للسامعين مجالاً ......... .",c:["دقيقاً — للشك","مضطرباً — للفهم","مقتضباً — للملل","غامضاً — للسؤال"],a:0,m:[null,"context","context","context"],e:"الفاء تدل على نتيجة. الدقة في العرض نتيجتها انتفاء الشك، فالخياران متسقان منطقياً.",d:2},
+{s:"comp",q:"رغم ......... الطريق، إلا أن المسافر واصل سيره ......... .",c:["وعورة — بعزيمة","سهولة — بتثاقل","قصر — بتردّد","اتساع — بخوف"],a:0,m:[null,"context","context","context"],e:"«رغم ... إلا أن» تقتضي تضاداً: صعوبة في الطريق يقابلها إصرار في السير.",d:2},
+{s:"comp",q:"القراءة ......... للعقل، فهي ......... آفاقه وتنمّي مداركه.",c:["غذاءٌ — توسّع","عبءٌ — تضيّق","ترفٌ — تشغل","عادةٌ — تحدّ"],a:0,m:[null,"context","context","context"],e:"الفاء تعليلية، والسياق مدح للقراءة: هي غذاء للعقل لأنها توسّع آفاقه — بما ينسجم مع «تنمّي مداركه».",d:1},
+{s:"comp",q:"لا يُعرف قدر ......... إلا عند ......... .",c:["العافية — المرض","الغنى — الثراء","الراحة — النوم","العلم — الدراسة"],a:0,m:[null,"context","context","context"],e:"المعنى المألوف: قيمة الشيء تظهر عند فقده. قدر العافية يُعرف عند المرض.",d:2},
+
+/* ───── الخطأ السياقي ───── */
+{s:"ctx",q:"حدّد الكلمة التي لا يستقيم بها المعنى: «انتشر الخبر في المدينة كالنار في الهشيم، فتسارع الناس إلى تصديقه دون تكذيب أو صمت».",c:["صمت","انتشر","تسارع","تصديقه"],a:0,m:[null,"context","context","context"],e:"المقابل المنطقي لـ«تصديق» هو «تمحيص» أو «تثبّت»، أما «صمت» فلا تقابل التصديق ولا تستقيم في السياق.",d:2},
+{s:"ctx",q:"حدّد الكلمة التي لا يستقيم بها المعنى: «كان الطالب مجتهداً منظّماً، لذلك جاءت نتيجته مخيّبة لتوقعات معلميه».",c:["مخيّبة","مجتهداً","منظّماً","نتيجته"],a:0,m:[null,"context","context","context"],e:"«لذلك» تفيد النتيجة المنطقية، والاجتهاد والتنظيم لا يُنتجان خيبة. الصواب «مُرضية» أو «مشرّفة».",d:1},
+{s:"ctx",q:"حدّد الكلمة التي لا يستقيم بها المعنى: «تميّز الكتاب بأسلوبه الواضح وعباراته الغامضة التي يسهل على القارئ فهمها».",c:["الغامضة","الواضح","تميّز","فهمها"],a:0,m:[null,"context","context","context"],e:"«الغامضة» تناقض «الواضح» و«يسهل فهمها» في الجملة نفسها. الصواب «السهلة» أو «الميسّرة».",d:1},
+{s:"ctx",q:"حدّد الكلمة التي لا يستقيم بها المعنى: «حرص المزارع على ريّ أشجاره في موعدها، فأثمرت وذبلت ثمارها».",c:["ذبلت","حرص","أثمرت","موعدها"],a:0,m:[null,"context","context","context"],e:"الحرص على الري يؤدي إلى الإثمار والنضج، لا الذبول. الصواب «نضجت» أو «أينعت».",d:1},
+
+/* ───── المفردة الشاذة ───── */
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["كرسي","تفاحة","موزة","برتقالة"],a:0,m:[null,"vocab","vocab","vocab"],e:"الثلاثة الأخرى فواكه، والكرسي أثاث.",d:1},
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["نهر","بحر","محيط","خليج"],a:0,m:[null,"vocab","vocab","vocab"],e:"البحر والمحيط والخليج مياه مالحة، والنهر ماء عذب.",d:2},
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["أزرق","طويل","قصير","عريض"],a:0,m:[null,"vocab","vocab","vocab"],e:"الثلاثة الأخرى صفات قياس وأبعاد، و«أزرق» صفة لون.",d:2},
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["مسطرة","قصيدة","رواية","مسرحية"],a:0,m:[null,"vocab","vocab","vocab"],e:"القصيدة والرواية والمسرحية أجناس أدبية، والمسطرة أداة.",d:1},
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["يستمع","يقرأ","يكتب","يؤلّف"],a:0,m:[null,"vocab","vocab","vocab"],e:"القراءة والكتابة والتأليف أفعال تتصل بالنص المكتوب، والاستماع فعل سمعي.",d:3},
+
+/* ───── استيعاب المقروء ───── */
+{s:"read",p:"يظنّ كثير من الطلاب أن كثرة ساعات المذاكرة هي وحدها سبيل التفوق، غير أن الدراسات الحديثة تشير إلى أن نوعية المذاكرة أهم من كميتها. فالطالب الذي يختبر نفسه بأسئلة بعد كل جزء يقرؤه يثبّت المعلومة أضعاف ما يثبّتها من يكتفي بإعادة القراءة مرات متتالية. والسبب أن استرجاع المعلومة من الذاكرة جهد نشط يقوّي أثرها، بينما إعادة القراءة جهد سلبي يمنح شعوراً زائفاً بالإتقان.",q:"ما الفكرة الرئيسة للنص؟",c:["الاختبار الذاتي أنفع من إعادة القراءة","ساعات المذاكرة الطويلة لا فائدة منها","الدراسات الحديثة غيّرت مناهج التعليم","القراءة المتكررة تسبب النسيان"],a:0,m:[null,"overreach","detail","overreach"],e:"النص يوازن بين طريقتين ويرجّح الاسترجاع النشط (الاختبار الذاتي) على إعادة القراءة. الخيارات الأخرى مبالغات لم يقلها النص.",d:2},
+{s:"read",p:"يظنّ كثير من الطلاب أن كثرة ساعات المذاكرة هي وحدها سبيل التفوق، غير أن الدراسات الحديثة تشير إلى أن نوعية المذاكرة أهم من كميتها. فالطالب الذي يختبر نفسه بأسئلة بعد كل جزء يقرؤه يثبّت المعلومة أضعاف ما يثبّتها من يكتفي بإعادة القراءة مرات متتالية. والسبب أن استرجاع المعلومة من الذاكرة جهد نشط يقوّي أثرها، بينما إعادة القراءة جهد سلبي يمنح شعوراً زائفاً بالإتقان.",q:"ما المقصود بعبارة «شعوراً زائفاً بالإتقان» كما وردت في النص؟",c:["ظنّ الطالب أنه أتقن وهو لم يتقن","خوف الطالب من الاختبار","إتقان الطالب لجزء دون آخر","نسيان الطالب لما ذاكره"],a:0,m:[null,"overreach","detail","detail"],e:"«زائف» تعني غير حقيقي، فالمعنى أن سهولة القراءة توهم الطالب بالإتقان دون أن يكون قد أتقن فعلاً.",d:2},
+{s:"read",p:"يظنّ كثير من الطلاب أن كثرة ساعات المذاكرة هي وحدها سبيل التفوق، غير أن الدراسات الحديثة تشير إلى أن نوعية المذاكرة أهم من كميتها. فالطالب الذي يختبر نفسه بأسئلة بعد كل جزء يقرؤه يثبّت المعلومة أضعاف ما يثبّتها من يكتفي بإعادة القراءة مرات متتالية. والسبب أن استرجاع المعلومة من الذاكرة جهد نشط يقوّي أثرها، بينما إعادة القراءة جهد سلبي يمنح شعوراً زائفاً بالإتقان.",q:"أيّ العبارات التالية يمكن استنتاجها من النص؟",c:["الطالب المستعدّ بالاختبار الذاتي أفضل حالاً من نظيره الذي يعيد القراءة فقط","ينبغي إلغاء القراءة من طرق المذاكرة","الطلاب المتفوقون لا يذاكرون ساعات طويلة","الدراسات الحديثة تعارض المناهج المدرسية"],a:0,m:[null,"overreach","overreach","overreach"],e:"النص فاضل بين الطريقتين ورجّح الاسترجاع، وهذا ما يدعم الخيار الأول. أما إلغاء القراءة أو معارضة المناهج فلم يردا في النص.",d:3},
+{s:"read",p:"لم تكن الطرق التجارية القديمة مجرد ممرات للبضائع، بل كانت شرايين تنتقل عبرها الأفكار واللغات والعلوم. فحيثما مرّت القافلة تركت أثراً في اللسان والعمارة والعادات. ولذلك يرى المؤرخون أن دراسة تلك الطرق لا تكشف عن اقتصاد الأمم فحسب، بل عن تكوين ثقافاتها أيضاً.",q:"ما الذي يريد الكاتب تأكيده أساساً؟",c:["الأثر الثقافي للطرق التجارية لا الاقتصادي فقط","أهمية القوافل في نقل البضائع","تفوّق العمارة القديمة على الحديثة","اختلاف المؤرخين حول الطرق التجارية"],a:0,m:[null,"detail","overreach","overreach"],e:"«بل كانت شرايين تنتقل عبرها الأفكار» و«عن تكوين ثقافاتها أيضاً» — الكاتب يوسّع النظر من الاقتصاد إلى الثقافة.",d:2},
+{s:"read",p:"لم تكن الطرق التجارية القديمة مجرد ممرات للبضائع، بل كانت شرايين تنتقل عبرها الأفكار واللغات والعلوم. فحيثما مرّت القافلة تركت أثراً في اللسان والعمارة والعادات. ولذلك يرى المؤرخون أن دراسة تلك الطرق لا تكشف عن اقتصاد الأمم فحسب، بل عن تكوين ثقافاتها أيضاً.",q:"ما دلالة وصف الطرق التجارية بأنها «شرايين»؟",c:["أنها ممرات حيوية لا غنى عنها لحياة الأمم","أنها كانت ضيقة ومتشعبة","أنها تعرّضت للخطر كثيراً","أنها تنقل الماء والغذاء"],a:0,m:[null,"detail","overreach","vocab"],e:"الشريان في الجسم ينقل ما به الحياة، فالاستعارة تدل على الحيوية والضرورة لا على الشكل.",d:3},
+{s:"read",p:"لم تكن الطرق التجارية القديمة مجرد ممرات للبضائع، بل كانت شرايين تنتقل عبرها الأفكار واللغات والعلوم. فحيثما مرّت القافلة تركت أثراً في اللسان والعمارة والعادات. ولذلك يرى المؤرخون أن دراسة تلك الطرق لا تكشف عن اقتصاد الأمم فحسب، بل عن تكوين ثقافاتها أيضاً.",q:"أي المجالات التالية لم يذكر النص تأثّره بمرور القوافل؟",c:["الطب","اللسان","العمارة","العادات"],a:0,m:[null,"detail","detail","detail"],e:"النص ذكر: اللسان والعمارة والعادات (والأفكار واللغات والعلوم). الطب لم يُذكر.",d:1},
+
+/* ══ الدفعة الثانية ══ */
+/* ترتيب العمليات */
+{s:"ord",q:"أوجد ناتج: 9 + 12 ÷ 4 × 2 − 5",c:["10","16","4","2"],a:0,m:[null,"partial","order","sign"],e:"القسمة والضرب من اليمين لليسار: 12÷4=3، ثم 3×2=6. يصبح 9+6−5 = 10.",d:2},
+{s:"ord",q:"أوجد ناتج: (15 − 3) ÷ (2 + 4)",c:["2","11","4","12"],a:0,m:[null,"order","partial","partial"],e:"نحسب القوسين أولاً: 12 ÷ 6 = 2.",d:1},
+{s:"ord",q:"أوجد ناتج: 4 + 2 × 3² − 6",c:["16","48","34","12"],a:0,m:[null,"order","exp_rule","partial"],e:"الأس أولاً: 3²=9، ثم الضرب: 2×9=18، ثم 4+18−6 = 16.",d:2},
+/* النسب */
+{s:"rat",q:"نسبة الكرات الحمراء إلى الزرقاء 5 : 3، والفرق بينهما 10 كرات. كم مجموع الكرات؟",c:["40","16","25","30"],a:0,m:[null,"ratio_inv","partial","partial"],e:"فرق الأجزاء = 5−3 = 2، وقيمة الجزء = 10 ÷ 2 = 5. المجموع = (5+3) × 5 = 40 كرة.",d:3},
+{s:"rat",q:"إذا كان أ : ب = 3 : 4 و ب : ج = 2 : 5، فما نسبة أ : ج؟",c:["3 : 10","15 : 8","5 : 6","6 : 9"],a:0,m:[null,"ratio_inv","partial","partial"],e:"أ/ج = (أ/ب) × (ب/ج) = (3/4) × (2/5) = 6/20 = 3/10.",d:3},
+{s:"rat",q:"ثلاث آلات تعبّئ 600 علبة في ساعتين. كم علبة تعبّئ 5 آلات في 3 ساعات بنفس المعدل؟",c:["1500","1000","900","1800"],a:0,m:[null,"partial","ratio_inv","partial"],e:"معدل الآلة الواحدة = 600 ÷ (3 × 2) = 100 علبة/ساعة. إذن 5 × 3 × 100 = 1500 علبة.",d:3},
+{s:"rat",q:"ثمن 4 دفاتر 18 ريالاً. كم ثمن 10 دفاتر؟",c:["45","40","72","36"],a:0,m:[null,"partial","ratio_inv","partial"],e:"ثمن الدفتر = 18 ÷ 4 = 4.5 ريال، وثمن 10 دفاتر = 45 ريالاً.",d:1},
+/* النسبة المئوية */
+{s:"pct",q:"بعد خصم 25% أصبح سعر سلعة 180 ريالاً. كم كان سعرها الأصلي؟",c:["240","225","205","720"],a:0,m:[null,"pct_base","partial","pct_base"],e:"السعر بعد الخصم يمثّل 75% من الأصلي، إذن الأصلي = 180 ÷ 0.75 = 240 ريالاً.",d:3},
+{s:"pct",q:"مبلغ 800 ريال زاد بنسبة 10% ثم نقص الناتج بنسبة 10%. كم يصبح؟",c:["792","800","808","780"],a:0,m:[null,"pct_base","partial","partial"],e:"800 × 1.10 = 880، ثم 880 × 0.90 = 792. لا يعود للمبلغ الأصلي لأن النقص حُسب على مبلغ أكبر.",d:3},
+{s:"pct",q:"في مدرسة 60% من الطلاب بنات، وعدد البنين 120. كم العدد الكلي؟",c:["300","200","180","480"],a:0,m:[null,"pct_base","pct_comp","pct_base"],e:"البنون = 40% من الكل، إذن الكل = 120 ÷ 0.40 = 300 طالب.",d:2},
+{s:"pct",q:"نسبة الملح في محلول 5%، وكتلة المحلول 400 غرام. كم كتلة الملح؟",c:["20 غراماً","80 غراماً","5 غرامات","40 غراماً"],a:0,m:[null,"pct_base","partial","pct_base"],e:"5% × 400 = 0.05 × 400 = 20 غراماً.",d:1},
+/* المتوسط */
+{s:"avg",q:"متوسط 6 أعداد هو 15، ومتوسط أربعة منها 12. ما متوسط العددين الباقيين؟",c:["21","18","27","3"],a:0,m:[null,"partial","avg_sum","avg_sum"],e:"المجموع الكلي = 90، ومجموع الأربعة = 48. الباقي = 42 لعددين، فمتوسطهما = 21.",d:3},
+{s:"avg",q:"ما منوال القيم: 12 ، 15 ، 15 ، 18 ، 20 ؟",c:["15","16","18","20"],a:0,m:[null,"avg_sum","partial","partial"],e:"المنوال هو القيمة الأكثر تكراراً، وهي 15 (تكررت مرتين).",d:1},
+{s:"avg",q:"متوسط أطوال 3 لاعبين 180 سم. إذا كان طول اثنين منهم 175 و178 سم، فكم طول الثالث؟",c:["187","182","185","190"],a:0,m:[null,"avg_sum","partial","partial"],e:"مجموع الأطوال = 3 × 180 = 540. الثالث = 540 − (175+178) = 540 − 353 = 187 سم.",d:2},
+/* الوحدات */
+{s:"unt",q:"كم ثانية في ساعة وربع؟",c:["4500","3900","75","4400"],a:0,m:[null,"unit","unit","unit"],e:"الساعة = 3600 ثانية، والربع = 900 ثانية. المجموع = 4500 ثانية.",d:2},
+{s:"unt",q:"قارن بين: القيمة الأولى 3 كم — القيمة الثانية 2500 متر",c:["القيمة الأولى أكبر","القيمة الثانية أكبر","القيمتان متساويتان","المعطيات غير كافية"],a:0,m:[null,"unit","unit","insufficient"],e:"3 كم = 3000 متر، وهي أكبر من 2500 متر.",d:1},
+/* السرعة */
+{s:"spd",q:"قطار طوله 200 متر يسير بسرعة 20 م/ث. كم ثانية يستغرق لعبور نفق طوله 300 متر كاملاً؟",c:["25","15","10","20"],a:0,m:[null,"partial","partial","partial"],e:"يقطع القطار طول النفق + طول نفسه = 300 + 200 = 500 متر. الزمن = 500 ÷ 20 = 25 ثانية.",d:3},
+{s:"spd",q:"ذهب سائق بسرعة 60 كم/س، وعاد بنفس الطريق بسرعة 40 كم/س. ما متوسط سرعته في الرحلة كاملة؟",c:["48 كم/س","50 كم/س","20 كم/س","45 كم/س"],a:0,m:[null,"avg_sum","sign","partial"],e:"متوسط السرعة = المسافة الكلية ÷ الزمن الكلي، لا متوسط السرعتين. لمسافة 120 كم ذهاباً: الزمن 2 + 3 = 5 ساعات لمسافة 240 كم ⇒ 48 كم/س.",d:3},
+{s:"spd",q:"مشى شخص 3 كم في 45 دقيقة. ما سرعته بالكيلومتر في الساعة؟",c:["4","2.25","3.75","5"],a:0,m:[null,"unit","partial","partial"],e:"45 دقيقة = 0.75 ساعة. السرعة = 3 ÷ 0.75 = 4 كم/س.",d:2},
+/* الأعمار */
+{s:"age",q:"مجموع عمري أم وابنتها 44 سنة، والفرق بينهما 22 سنة. كم عمر الابنة؟",c:["11","22","33","16"],a:0,m:[null,"partial","partial","avg_sum"],e:"عمر الابنة = (المجموع − الفرق) ÷ 2 = (44 − 22) ÷ 2 = 11 سنة.",d:2},
+{s:"age",q:"قبل 5 سنوات كان عمر خالد 12 سنة. كم يكون عمره بعد 8 سنوات من الآن؟",c:["25","20","15","30"],a:0,m:[null,"partial","partial","partial"],e:"عمره الآن = 12 + 5 = 17 سنة، وبعد 8 سنوات = 25 سنة.",d:1},
+/* المعادلات */
+{s:"eqn",q:"إذا كان 7 − 2س = 1، فما قيمة س؟",c:["3","−3","4","8"],a:0,m:[null,"sign","partial","partial"],e:"7 − 1 = 2س ⇒ 2س = 6 ⇒ س = 3.",d:1},
+{s:"eqn",q:"إذا كان (2س + 1) ÷ 3 = 5، فما قيمة س؟",c:["7","8","3","14"],a:0,m:[null,"partial","partial","partial"],e:"نضرب الطرفين في 3: 2س + 1 = 15 ⇒ 2س = 14 ⇒ س = 7.",d:2},
+{s:"eqn",q:"إذا كان س² = 49 وكان س عدداً سالباً، فما قيمة س؟",c:["−7","7","−49","−24.5"],a:0,m:[null,"sign","exp_rule","half"],e:"الجذران هما 7 و−7، والشرط أن س سالب، إذن س = −7.",d:2},
+{s:"eqn",q:"اشترت طالبة 3 أقلام ودفتراً بمبلغ 27 ريالاً، وكان ثمن الدفتر 9 ريالات. كم ثمن القلم الواحد؟",c:["6","9","12","5"],a:0,m:[null,"partial","partial","partial"],e:"ثمن الأقلام الثلاثة = 27 − 9 = 18 ريالاً، والقلم الواحد = 18 ÷ 3 = 6 ريالات.",d:1},
+/* المتباينات */
+{s:"ineq",q:"إذا كان س عدداً صحيحاً و −2 < س ≤ 3، فكم عدد القيم الممكنة لـ س؟",c:["5","6","4","7"],a:0,m:[null,"sign","partial","sign"],e:"القيم هي: −1، 0، 1، 2، 3 — خمس قيم. لاحظي أن −2 غير مشمولة و3 مشمولة.",d:3},
+{s:"ineq",q:"إذا كان 2س + 3 ≥ 11، فما أصغر قيمة ممكنة لـ س؟",c:["4","7","5","3"],a:0,m:[null,"partial","sign","sign"],e:"2س ≥ 8 ⇒ س ≥ 4. وبما أن التساوي مسموح، فأصغر قيمة هي 4.",d:2},
+/* الأسس */
+{s:"exp",q:"أوجد قيمة: (2³)²",c:["64","32","128","12"],a:0,m:[null,"exp_rule","exp_rule","exp_rule"],e:"عند رفع أس إلى أس تُضرب الأسس: 2³ˣ² = 2⁶ = 64.",d:2},
+{s:"exp",q:"أوجد قيمة: √(16 × 9)",c:["12","25","7","144"],a:0,m:[null,"exp_rule","partial","exp_rule"],e:"√(16×9) = √16 × √9 = 4 × 3 = 12.",d:2},
+{s:"exp",q:"ما قيمة 2⁻² ؟",c:["1/4","−4","4","−1/4"],a:0,m:[null,"sign","exp_rule","sign"],e:"الأس السالب يعني المقلوب: 2⁻² = 1 ÷ 2² = 1/4. الأس السالب لا يجعل الناتج سالباً.",d:3},
+/* المتتابعات */
+{s:"seq",q:"أكمل النمط: 1 ، 1 ، 2 ، 3 ، 5 ، 8 ، ... ؟",c:["13","11","16","10"],a:0,m:[null,"seq_rule","seq_rule","seq_rule"],e:"كل حد = مجموع الحدّين السابقين: 5 + 8 = 13.",d:2},
+{s:"seq",q:"أكمل النمط: 81 ، 27 ، 9 ، 3 ، ... ؟",c:["1","0","3","2"],a:0,m:[null,"seq_rule","seq_rule","seq_rule"],e:"كل حد = الحد السابق ÷ 3، إذن 3 ÷ 3 = 1.",d:1},
+{s:"seq",q:"في المتتابعة 4 ، 7 ، 10 ، 13 ، ... ما الحد العاشر؟",c:["31","34","28","40"],a:0,m:[null,"seq_rule","partial","seq_rule"],e:"الفرق ثابت = 3. الحد العاشر = 4 + (10−1) × 3 = 4 + 27 = 31.",d:3},
+/* الزوايا */
+{s:"ang",q:"مستقيمان متوازيان يقطعهما مستقيم ثالث، فتكوّنت زاويتان متبادلتان داخلياً إحداهما 65°. ما قياس الأخرى؟",c:["65°","115°","25°","130°"],a:0,m:[null,"angle_sum","angle_sum","angle_sum"],e:"الزاويتان المتبادلتان داخلياً بين مستقيمين متوازيين متساويتان، إذن 65°.",d:2},
+{s:"ang",q:"زاوية قياسها ثلث الزاوية المستقيمة. كم قياسها؟",c:["60°","30°","120°","90°"],a:0,m:[null,"angle_sum","partial","angle_sum"],e:"الزاوية المستقيمة = 180°، وثلثها = 60°.",d:1},
+{s:"ang",q:"زاويتان متكاملتان، إحداهما تزيد على الأخرى بـ40°. ما قياس الصغرى؟",c:["70°","110°","50°","20°"],a:0,m:[null,"partial","angle_sum","angle_sum"],e:"مجموعهما 180°. إذا كانت الصغرى س، فإن س + (س+40) = 180 ⇒ 2س = 140 ⇒ س = 70°.",d:3},
+/* المثلثات */
+{s:"tri",q:"مثلث متساوي الأضلاع محيطه 27 سم. ما طول ضلعه؟",c:["9 سم","13.5 سم","6.75 سم","3 سم"],a:0,m:[null,"half","partial","partial"],e:"الأضلاع الثلاثة متساوية، إذن الضلع = 27 ÷ 3 = 9 سم.",d:1},
+{s:"tri",q:"في مثلث قائم الزاوية، الوتر 13 سم وأحد ضلعي القائمة 5 سم. ما طول الضلع الثالث؟",c:["12 سم","8 سم","18 سم","144 سم"],a:0,m:[null,"avg_sum","avg_sum","exp_rule"],e:"بفيثاغورس: الضلع² = 13² − 5² = 169 − 25 = 144، إذن الضلع = 12 سم.",d:2},
+{s:"tri",q:"زوايا مثلث بنسبة 1 : 2 : 3. ما قياس أكبر زاوية فيه؟",c:["90°","60°","120°","30°"],a:0,m:[null,"partial","angle_sum","partial"],e:"مجموع الأجزاء = 6، وقيمة الجزء = 180 ÷ 6 = 30°. أكبر زاوية = 3 × 30 = 90°.",d:3},
+/* المساحة */
+{s:"area",q:"متوازي أضلاع طول قاعدته 10 سم وارتفاعه 6 سم. ما مساحته؟",c:["60 سم²","30 سم²","32 سم²","16 سم²"],a:0,m:[null,"half","area_peri","avg_sum"],e:"مساحة متوازي الأضلاع = القاعدة × الارتفاع = 10 × 6 = 60 سم². (لا تقسمي على 2؛ هذه قاعدة المثلث.)",d:2},
+{s:"area",q:"مستطيل محيطه 30 سم وطوله 9 سم. ما مساحته؟",c:["54 سم²","45 سم²","189 سم²","21 سم²"],a:0,m:[null,"partial","area_peri","area_peri"],e:"نصف المحيط = 15 = الطول + العرض ⇒ العرض = 6 سم. المساحة = 9 × 6 = 54 سم².",d:3},
+{s:"area",q:"شبه منحرف قاعدتاه المتوازيتان 8 سم و12 سم، وارتفاعه 5 سم. ما مساحته؟",c:["50 سم²","100 سم²","25 سم²","20 سم²"],a:0,m:[null,"half","half","area_peri"],e:"المساحة = ½ × (مجموع القاعدتين) × الارتفاع = ½ × 20 × 5 = 50 سم².",d:2},
+{s:"area",q:"حديقة مربعة طول ضلعها 15 متراً، ويُراد إحاطتها بسياج تكلفة المتر منه 40 ريالاً. كم تكلفة السياج؟",c:["2400 ريال","9000 ريال","600 ريال","1200 ريال"],a:0,m:[null,"area_peri","partial","half"],e:"السياج يحيط بالحديقة، فنستخدم المحيط: 4 × 15 = 60 متراً. التكلفة = 60 × 40 = 2400 ريال. (9000 ناتج استخدام المساحة خطأً.)",d:3},
+/* الدائرة */
+{s:"cir",q:"دائرة نصف قطرها 3 سم. ما مساحتها بدلالة π؟",c:["9π","6π","3π","36π"],a:0,m:[null,"area_peri","partial","rad_diam"],e:"المساحة = π نق² = π × 3² = 9π سم².",d:1},
+{s:"cir",q:"إذا تضاعف نصف قطر دائرة، فماذا يحدث لمساحتها؟",c:["تصبح 4 أمثالها","تتضاعف","تصبح 8 أمثالها","لا تتغير"],a:0,m:[null,"area_peri","exp_rule","area_peri"],e:"المساحة = π نق². عند مضاعفة نق تصبح π(2نق)² = 4π نق² — أي أربعة أمثال.",d:3},
+{s:"cir",q:"في دائرة نصف قطرها 6 سم، ما طول القوس المقابل لزاوية مركزية 60°؟",c:["2π سم","6π سم","π سم","12π سم"],a:0,m:[null,"partial","half","area_peri"],e:"60° هي سدس الدائرة. المحيط = 2π×6 = 12π، والقوس = 12π ÷ 6 = 2π سم.",d:3},
+/* الحجوم */
+{s:"vol",q:"أسطوانة نصف قطر قاعدتها 3 سم وارتفاعها 10 سم. ما حجمها بدلالة π؟",c:["90π سم³","60π سم³","30π سم³","900π سم³"],a:0,m:[null,"area_peri","exp_rule","unit"],e:"حجم الأسطوانة = π نق² × الارتفاع = π × 9 × 10 = 90π سم³.",d:2},
+{s:"vol",q:"مكعب حجمه 125 سم³. ما طول حرفه؟",c:["5 سم","25 سم","15 سم","12.5 سم"],a:0,m:[null,"exp_rule","partial","half"],e:"الحرف = الجذر التكعيبي للحجم = ∛125 = 5 سم (لأن 5×5×5 = 125).",d:2},
+/* الرسوم */
+{s:"chart",q:"مبيعات متجر بالآلاف: يناير 30 ، فبراير 45 ، مارس 25 ، أبريل 50. ما متوسط المبيعات الشهرية؟",c:["37.5","40","35","150"],a:0,m:[null,"read_chart","read_chart","avg_sum"],e:"المجموع = 150، وعدد الأشهر 4، فالمتوسط = 150 ÷ 4 = 37.5 ألفاً.",d:2},
+{s:"chart",q:"درجة الحرارة خلال يوم: 6ص → 18° ، 9ص → 22° ، 12ظ → 30° ، 3م → 28°. في أي فترة حدث أكبر ارتفاع؟",c:["من 9ص إلى 12ظ","من 6ص إلى 9ص","من 12ظ إلى 3م","الارتفاع متساوٍ"],a:0,m:[null,"read_chart","sign","read_chart"],e:"الفروق: 4 ثم 8 ثم −2. أكبر ارتفاع 8 درجات بين 9ص و12ظ. لاحظي أن الفترة الأخيرة انخفاض لا ارتفاع.",d:3},
+{s:"chart",q:"عدد الكتب المقروءة: سارة 12 ، نورة 8 ، ريم 16 ، لمى 4. كم نسبة ما قرأته ريم من المجموع؟",c:["40%","16%","25%","30%"],a:0,m:[null,"read_chart","partial","pct_base"],e:"المجموع = 40 كتاباً. نصيب ريم = 16 ÷ 40 = 0.40 = 40%.",d:2},
+/* الاحتمالات */
+{s:"prob",q:"بطاقات مرقّمة من 1 إلى 10، سُحبت واحدة عشوائياً. ما احتمال أن يكون رقمها أكبر من 7؟",c:["3/10","1/5","7/10","2/5"],a:0,m:[null,"partial","prob_comp","partial"],e:"الأعداد الأكبر من 7 هي: 8، 9، 10 — ثلاثة من عشرة = 3/10. (العدد 7 نفسه غير مشمول.)",d:2},
+{s:"prob",q:"في صندوق 4 كرات بيضاء و6 سوداء. سُحبت كرة فكانت بيضاء ولم تُعد. ما احتمال أن تكون الكرة الثانية بيضاء أيضاً؟",c:["1/3","2/5","4/9","3/10"],a:0,m:[null,"partial","partial","partial"],e:"بقي 3 بيضاء من أصل 9 كرات، إذن الاحتمال = 3/9 = 1/3. انتبهي لتغيّر العدد الكلي بعد السحب.",d:3},
+{s:"prob",q:"عند رمي نردين معاً، ما احتمال أن يكون مجموع العددين 12؟",c:["1/36","1/6","1/12","1/18"],a:0,m:[null,"partial","partial","partial"],e:"عدد النواتج الكلية = 6 × 6 = 36، والحالة الوحيدة للمجموع 12 هي (6،6). إذن الاحتمال = 1/36.",d:3},
+/* التباديل */
+{s:"cmb",q:"يُراد تشكيل لجنة من شخصين من بين 5 أشخاص. كم طريقة ممكنة؟",c:["10","20","25","7"],a:0,m:[null,"seq_rule","exp_rule","avg_sum"],e:"الترتيب غير مهم في اللجنة، فهي توافيق: (5×4) ÷ 2 = 10 طرق.",d:3},
+{s:"cmb",q:"كم عدداً مكوّناً من ثلاث خانات يمكن تكوينه من الأرقام 1 إلى 5 مع السماح بالتكرار؟",c:["125","60","15","243"],a:0,m:[null,"partial","avg_sum","exp_rule"],e:"لكل خانة 5 اختيارات: 5 × 5 × 5 = 125 عدداً.",d:2},
+/* المقارنات */
+{s:"cmp",q:"قارن بين: القيمة الأولى = 2/3 — القيمة الثانية = 0.7",c:["القيمة الثانية أكبر","القيمة الأولى أكبر","القيمتان متساويتان","المعطيات غير كافية"],a:0,m:[null,"partial","partial","insufficient"],e:"2/3 ≈ 0.667 وهي أصغر من 0.7. حوّلي دائماً إلى صورة واحدة قبل المقارنة.",d:2},
+{s:"cmp",q:"س عدد صحيح موجب. قارن بين: القيمة الأولى = س + 2 — القيمة الثانية = 2س",c:["المعطيات غير كافية","القيمة الأولى أكبر","القيمة الثانية أكبر","القيمتان متساويتان"],a:0,m:[null,"insufficient","insufficient","insufficient"],e:"عند س=1: 3 > 2، وعند س=3: 5 < 6، وعند س=2 تتساويان. النتيجة تتغير، فالمعطيات غير كافية.",d:3},
+{s:"cmp",q:"قارن بين: القيمة الأولى = مساحة مربع طول ضلعه 4 — القيمة الثانية = مساحة مستطيل بُعداه 8 و2",c:["القيمتان متساويتان","القيمة الأولى أكبر","القيمة الثانية أكبر","المعطيات غير كافية"],a:0,m:[null,"area_peri","area_peri","insufficient"],e:"الأولى = 4² = 16، والثانية = 8 × 2 = 16. متساويتان في المساحة (وإن اختلف المحيط).",d:2},
+{s:"cmp",q:"إذا كان أ > ب > 0، قارن بين: القيمة الأولى = أ − ب — القيمة الثانية = ب − أ",c:["القيمة الأولى أكبر","القيمة الثانية أكبر","القيمتان متساويتان","المعطيات غير كافية"],a:0,m:[null,"sign","sign","insufficient"],e:"ما دام أ > ب فإن أ−ب موجب و ب−أ سالب، والموجب أكبر دائماً.",d:2},
+{s:"cmp",q:"قارن بين: القيمة الأولى = عدد أضلاع المسدّس — القيمة الثانية = عدد أضلاع المخمّس + 1",c:["القيمتان متساويتان","القيمة الأولى أكبر","القيمة الثانية أكبر","المعطيات غير كافية"],a:0,m:[null,"partial","partial","insufficient"],e:"المسدّس له 6 أضلاع، والمخمّس 5 أضلاع + 1 = 6. متساويتان.",d:1},
+/* التناظر اللفظي */
+{s:"ana",q:"كتاب : فصل",c:["بناية : طابق","قلم : حبر","شجرة : غابة","سيارة : طريق"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: كل وجزء منه. الكتاب يتكوّن من فصول، والبناية من طوابق. أما «شجرة : غابة» فعكس الاتجاه (جزء وكل).",d:2},
+{s:"ana",q:"مطر : غيم",c:["ثمر : شجر","نهر : بحر","برق : رعد","ريح : غبار"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: ناتج ومصدره. المطر ينزل من الغيم، والثمر يخرج من الشجر.",d:3},
+{s:"ana",q:"سكين : حادّ",c:["قطن : ناعم","خشب : نجار","نار : حرق","حجر : بناء"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: شيء وصفته المميزة. السكين حادّ، والقطن ناعم. أما «نار : حرق» فعلاقة سبب بأثر.",d:2},
+{s:"ana",q:"طبيب : مِبضع",c:["نجار : منشار","مهندس : مبنى","فلاح : محصول","خيّاط : ثوب"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: صاحب مهنة وأداته. أما بقية الخيارات فمهنة ومنتَجها لا أداتها.",d:2},
+{s:"ana",q:"صمت : ثرثرة",c:["بخل : سخاء","حزن : دموع","كرم : جود","خوف : فزع"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: تضاد. الصمت ضد الثرثرة، والبخل ضد السخاء. أما «كرم : جود» و«خوف : فزع» فترادف.",d:2},
+{s:"ana",q:"قمح : خبز",
+ c:["قطن : قميص","خبز : فرن","حديد : صلابة","زيتون : شجرة"],a:0,m:[null,"relation","relation","relation"],e:"العلاقة: مادة خام ومنتَجها النهائي. من القمح يُصنع الخبز، ومن القطن يُصنع القميص.",d:2},
+/* إكمال الجمل */
+{s:"comp",q:"ما كان الحلم عن عجزٍ، وإنما هو ......... يملكه القوي القادر على ......... .",c:["خُلقٌ — العقاب","ضعفٌ — الهرب","صمتٌ — الكلام","كِبْرٌ — التسامح"],a:0,m:[null,"context","context","context"],e:"«ما كان ... وإنما» تنفي المعنى الأول وتثبت ضده: الحلم فضيلة عند من يقدر على العقاب فيعفو.",d:3},
+{s:"comp",q:"كلما ......... الإنسان في العلم، ازداد ......... بجهله.",c:["تعمّق — يقيناً","أسرع — فخراً","قلّ — علماً","زهد — رضاً"],a:0,m:[null,"context","context","context"],e:"المعنى المشهور: من يتعمّق في العلم يدرك اتساع ما يجهله. «تعمّق — يقيناً» هي المتسقة.",d:3},
+{s:"comp",q:"لا تحكم على التجربة قبل أن ......... ، فالحكم المتعجّل ......... .",c:["تخوضها — ظالم","تسمعها — عادل","تنساها — صائب","ترفضها — دقيق"],a:0,m:[null,"context","context","context"],e:"الفاء تعليلية: النهي عن الحكم قبل الخوض، لأن التعجّل يورث ظلماً في الحكم.",d:2},
+{s:"comp",q:"كان الطريق ......... ، غير أن العزيمة جعلته ......... .",c:["شاقاً — هيّناً","قصيراً — طويلاً","ممهّداً — وعراً","واضحاً — غامضاً"],a:0,m:[null,"context","context","context"],e:"«غير أن» تفيد الاستدراك، والعزيمة قوة إيجابية تحوّل الشاق إلى هيّن لا العكس.",d:2},
+{s:"comp",q:"الحفاظ على الصحة ......... من علاجها، فالوقاية ......... من الدواء.",c:["أيسر — أجدى","أصعب — أضعف","أغلى — أقل","أبطأ — أسرع"],a:0,m:[null,"context","context","context"],e:"الفاء تعليلية، والجملتان تسيران في اتجاه واحد: الوقاية أيسر وأنفع من العلاج.",d:1},
+/* الخطأ السياقي */
+{s:"ctx",q:"حدّدي الكلمة التي لا يستقيم بها المعنى: «كان الجو صحواً والسماء صافية، فحملنا المظلات خوفاً من الأمطار المنهمرة».",c:["المنهمرة","صحواً","صافية","المظلات"],a:0,m:[null,"context","context","context"],e:"لا تنهمر الأمطار مع جوٍّ صحوٍ وسماءٍ صافية. الصواب «الشمس الحارقة».",d:2},
+{s:"ctx",q:"حدّدي الكلمة التي لا يستقيم بها المعنى: «حرص الطالب على مراجعة دروسه أولاً بأول، فتراكمت عليه في آخر العام».",c:["تراكمت","حرص","مراجعة","آخر"],a:0,m:[null,"context","context","context"],e:"المراجعة أولاً بأول تمنع التراكم لا تسبّبه. الصواب «فخفّت عليه».",d:1},
+{s:"ctx",q:"حدّدي الكلمة التي لا يستقيم بها المعنى: «تتميز الصحراء باتساعها وقلة أمطارها وكثرة أنهارها».",c:["أنهارها","اتساعها","أمطارها","الصحراء"],a:0,m:[null,"context","context","context"],e:"كثرة الأنهار تناقض قلة الأمطار وطبيعة الصحراء. الصواب «كثرة كثبانها».",d:1},
+{s:"ctx",q:"حدّدي الكلمة التي لا يستقيم بها المعنى: «استمع القاضي إلى الطرفين بإنصاتٍ تامّ، ثم أصدر حكمه متعجّلاً».",c:["متعجّلاً","استمع","الطرفين","إنصاتٍ"],a:0,m:[null,"context","context","context"],e:"الإنصات التام يقتضي التروّي لا العجلة. الصواب «متروّياً».",d:2},
+{s:"ctx",q:"حدّدي الكلمة التي لا يستقيم بها المعنى: «أقلعت الطائرة في موعدها تماماً، فاعتذرت الشركة للركاب عن التأخير».",c:["التأخير","أقلعت","موعدها","اعتذرت"],a:0,m:[null,"context","context","context"],e:"لا اعتذار عن تأخير لم يقع. الصواب أن تشكرهم أو تعتذر عن أمر آخر.",d:1},
+/* المفردة الشاذة */
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["دائرة","مثلث","مربع","مستطيل"],a:0,m:[null,"vocab","vocab","vocab"],e:"الثلاثة الأخرى مضلّعات لها أضلاع وزوايا، والدائرة منحنى مغلق بلا أضلاع.",d:2},
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["الأربعاء","سبتمبر","أكتوبر","نوفمبر"],a:0,m:[null,"vocab","vocab","vocab"],e:"الثلاثة الأخرى شهور، والأربعاء يوم من أيام الأسبوع.",d:1},
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["يد","بصر","سمع","شمّ"],a:0,m:[null,"vocab","vocab","vocab"],e:"الثلاثة الأخرى حواسّ، واليد عضو.",d:3},
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["زجاج","ذهب","فضة","نحاس"],a:0,m:[null,"vocab","vocab","vocab"],e:"الثلاثة الأخرى معادن، والزجاج ليس معدناً.",d:2},
+{s:"odd",q:"أي الكلمات التالية شاذة عن المجموعة؟",c:["مستشفى","طبيب","مهندس","معلم"],a:0,m:[null,"vocab","vocab","vocab"],e:"الثلاثة الأخرى مهن، والمستشفى مكان.",d:1},
+/* استيعاب المقروء */
+{s:"read",p:"يُعدّ التسويف من أكثر ما يعوق الطالب عن تحقيق أهدافه، وهو في جوهره ليس كسلاً بقدر ما هو هروب من شعور غير مريح يرافق بداية العمل. ولهذا وجد الباحثون أن أنجع علاج له ليس زيادة الحماس، بل تصغير المهمة حتى تصبح بدايتها أهون من الهروب منها؛ فمن يعجز عن مذاكرة فصل كامل قد يبدأ بصفحة واحدة، فإذا بدأ زال الشعور المزعج وواصل.",q:"ما سبب التسويف كما يراه النص؟",c:["الهروب من شعور غير مريح يرافق البداية","الكسل وحبّ الراحة","كثرة المهام المطلوبة من الطالب","ضعف الحماس والدافعية"],a:0,m:[null,"overreach","overreach","detail"],e:"النص ينصّ صراحة: «ليس كسلاً بقدر ما هو هروب من شعور غير مريح يرافق بداية العمل».",d:2},
+{s:"read",p:"يُعدّ التسويف من أكثر ما يعوق الطالب عن تحقيق أهدافه، وهو في جوهره ليس كسلاً بقدر ما هو هروب من شعور غير مريح يرافق بداية العمل. ولهذا وجد الباحثون أن أنجع علاج له ليس زيادة الحماس، بل تصغير المهمة حتى تصبح بدايتها أهون من الهروب منها؛ فمن يعجز عن مذاكرة فصل كامل قد يبدأ بصفحة واحدة، فإذا بدأ زال الشعور المزعج وواصل.",q:"ما العلاج الذي يرجّحه النص؟",c:["تصغير المهمة حتى تسهل بدايتها","رفع مستوى الحماس قبل العمل","تأجيل المهمة إلى وقت أنسب","مضاعفة ساعات المذاكرة"],a:0,m:[null,"detail","overreach","overreach"],e:"النص يستبعد زيادة الحماس صراحة ويرجّح تصغير المهمة: «بل تصغير المهمة حتى تصبح بدايتها أهون».",d:2},
+{s:"read",p:"يُعدّ التسويف من أكثر ما يعوق الطالب عن تحقيق أهدافه، وهو في جوهره ليس كسلاً بقدر ما هو هروب من شعور غير مريح يرافق بداية العمل. ولهذا وجد الباحثون أن أنجع علاج له ليس زيادة الحماس، بل تصغير المهمة حتى تصبح بدايتها أهون من الهروب منها؛ فمن يعجز عن مذاكرة فصل كامل قد يبدأ بصفحة واحدة، فإذا بدأ زال الشعور المزعج وواصل.",q:"ما الذي يمكن استنتاجه من قوله «فإذا بدأ زال الشعور المزعج وواصل»؟",c:["أن أصعب ما في العمل هو بدايته","أن الشعور المزعج لا علاج له","أن الحماس يأتي قبل البدء دائماً","أن المذاكرة الطويلة أفضل من القصيرة"],a:0,m:[null,"overreach","overreach","overreach"],e:"زوال الشعور بمجرد البدء يدل على أن العائق يتركّز في لحظة البداية لا في العمل نفسه.",d:3},
+{s:"read",p:"تختلف اللغة عن سائر أدوات التواصل بأنها لا تنقل المعنى فحسب، بل تصوغ طريقة التفكير ذاتها. فالمفردات التي يملكها الإنسان تحدّد ما يستطيع ملاحظته والتعبير عنه؛ ولذلك يقال إن من اتسعت لغته اتسع إدراكه. غير أن ذلك لا يعني أن اللغة سجن للفكر، فالإنسان قادر على توليد ألفاظ جديدة كلما ضاقت به القديمة.",q:"ما العلاقة بين اتساع اللغة واتساع الإدراك في النص؟",c:["كلما اتسعت المفردات اتسعت القدرة على الملاحظة والتعبير","الإدراك يسبق اللغة دائماً ولا يتأثر بها","اللغة تحدّ من الإدراك وتضيّقه","لا توجد علاقة بينهما في نظر الكاتب"],a:0,m:[null,"overreach","overreach","detail"],e:"النص: «المفردات التي يملكها الإنسان تحدّد ما يستطيع ملاحظته والتعبير عنه».",d:2},
+{s:"read",p:"تختلف اللغة عن سائر أدوات التواصل بأنها لا تنقل المعنى فحسب، بل تصوغ طريقة التفكير ذاتها. فالمفردات التي يملكها الإنسان تحدّد ما يستطيع ملاحظته والتعبير عنه؛ ولذلك يقال إن من اتسعت لغته اتسع إدراكه. غير أن ذلك لا يعني أن اللغة سجن للفكر، فالإنسان قادر على توليد ألفاظ جديدة كلما ضاقت به القديمة.",q:"ماذا يقصد الكاتب بأن اللغة ليست «سجناً للفكر»؟",c:["أن الإنسان يستطيع توليد ألفاظ جديدة عند الحاجة","أن الفكر لا يحتاج إلى لغة أصلاً","أن اللغات كلها متساوية في قدرتها","أن المفردات القديمة تكفي كل العصور"],a:0,m:[null,"overreach","overreach","detail"],e:"الجملة التالية تفسّرها: «فالإنسان قادر على توليد ألفاظ جديدة كلما ضاقت به القديمة».",d:3},
+{s:"read",p:"تختلف اللغة عن سائر أدوات التواصل بأنها لا تنقل المعنى فحسب، بل تصوغ طريقة التفكير ذاتها. فالمفردات التي يملكها الإنسان تحدّد ما يستطيع ملاحظته والتعبير عنه؛ ولذلك يقال إن من اتسعت لغته اتسع إدراكه. غير أن ذلك لا يعني أن اللغة سجن للفكر، فالإنسان قادر على توليد ألفاظ جديدة كلما ضاقت به القديمة.",q:"أي العناوين التالية أنسب للنص؟",c:["اللغة وأثرها في التفكير","تاريخ نشأة اللغات الإنسانية","صعوبة تعلّم المفردات الجديدة","أدوات التواصل الحديثة"],a:0,m:[null,"overreach","detail","detail"],e:"النص كله يدور حول أثر اللغة في صياغة التفكير وحدود هذا الأثر.",d:2},
+];
+Q.forEach((q,i)=>{q.id="q"+i});
+const BY_SKILL = {};
+Q.forEach(q=>{(BY_SKILL[q.s] ||= []).push(q)});
+
+/* ══════════ 3. الحالة والتخزين ══════════ */
+const KEY="miqyas.v1";
+let mem=null;
+function load(){
+  try{const r=localStorage.getItem(KEY); if(r) return JSON.parse(r);}catch(e){}
+  return mem || {att:[],days:[],plan:null,horizon:"8",diag:false};
+}
+function save(){
+  mem=S;
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+}
+let S=load();
+S.att ||= []; S.days ||= []; S.grp ||= [];
+
+/* ── مشاركة التقرير: كود نصي بلا حسابات ولا سيرفر ── */
+function buildReport(){
+  const s={};
+  SKILLS.forEach(k=>{
+    const a=S.att.filter(x=>x.s===k.id);
+    if(!a.length) return;
+    const t=a.map(x=>x.t).sort((p,q)=>p-q);
+    s[k.id]=[a.length, a.filter(x=>x.ok).length, t[Math.floor(t.length/2)], a.filter(x=>x.c==="guess").length];
+  });
+  const w={};
+  S.att.filter(a=>!a.ok&&a.why).forEach(a=>{w[a.why]=(w[a.why]||0)+1});
+  return {v:1,n:(S.name||"طالبة").slice(0,24),d:today(),t:S.att.length,s,w};
+}
+function encodeReport(o){
+  const b=new TextEncoder().encode(JSON.stringify(o));
+  let bin=""; for(let i=0;i<b.length;i++) bin+=String.fromCharCode(b[i]);
+  return "MQ1."+btoa(bin);
+}
+function decodeReport(str){
+  const raw=String(str).trim().replace(/\s+/g,"").replace(/^MQ1\./,"");
+  const bin=atob(raw);
+  const arr=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) arr[i]=bin.charCodeAt(i);
+  const o=JSON.parse(new TextDecoder().decode(arr));
+  if(!o || o.v!==1 || typeof o.s!=="object") throw new Error("bad");
+  return o;
+}
+/* تحويل تقرير طالبة إلى مؤشرات */
+function reportStats(p){
+  let num=0,den=0,crit=[],slow=[],ok=0,n=0;
+  Object.entries(p.s).forEach(([id,v])=>{
+    const sk=SK[id]; if(!sk) return;
+    const [cnt,right,med]=v, m=right/cnt;
+    num+=m*sk.w; den+=sk.w; ok+=right; n+=cnt;
+    if(m<0.5 && cnt>=2) crit.push({id,m});
+    if(m>=0.75 && med>sk.t*1.3) slow.push({id});
+  });
+  crit.sort((a,b)=>a.m-b.m);
+  return {
+    name:p.n, date:p.d, total:p.t||n, acc:n?ok/n:0,
+    est:den?Math.round(45+50*(num/den)):null,
+    cov:Object.keys(p.s).length/SKILLS.length,
+    crit, slow, why:p.w||{}
+  };
+}
+
+function today(){return new Date().toISOString().slice(0,10)}
+function markDay(){const d=today(); if(!S.days.includes(d)){S.days.push(d); S.days=S.days.slice(-120);}}
+function streak(){
+  const set=new Set(S.days); let n=0; const d=new Date();
+  if(!set.has(d.toISOString().slice(0,10))) d.setDate(d.getDate()-1);
+  while(set.has(d.toISOString().slice(0,10))){n++; d.setDate(d.getDate()-1)}
+  return n;
+}
+
+/* ══════════ 4. محرك التشخيص ══════════ */
+function stateOf(id){
+  const sk=SK[id];
+  const a=S.att.filter(x=>x.s===id).slice(-8);
+  if(!a.length) return {id,sk,n:0,mastery:null,speed:null,bucket:"none",guessRate:0};
+  // دقة مرجّحة بالحداثة: المحاولة الأحدث أثقل
+  let num=0,den=0;
+  a.forEach((x,i)=>{const w=1+i*0.35; num+=w*(x.ok?1:0); den+=w});
+  const mastery=num/den;
+  const times=a.map(x=>x.t).sort((p,q)=>p-q);
+  const med=times[Math.floor(times.length/2)];
+  const speed=med/sk.t;                       // >1 يعني أبطأ من الزمن المعياري
+  const guessRate=a.filter(x=>x.c==="guess").length/a.length;
+  let bucket;
+  if(a.length<2) bucket="none";
+  else if(mastery<0.5) bucket="crit";
+  else if(mastery<0.75 || guessRate>=0.5) bucket="frag";
+  else if(speed>1.3) bucket="slow";
+  else bucket="solid";
+  return {id,sk,n:a.length,mastery,speed,bucket,guessRate};
+}
+function allStates(){return SKILLS.map(s=>stateOf(s.id))}
+function priority(st){
+  const m = st.mastery==null ? 0.45 : st.mastery;   // غير المختبَرة تُعامل كمتوسطة
+  const untested = st.mastery==null ? 1.15 : 1;
+  return (1-m)*st.sk.w*untested;
+}
+function estScore(){
+  const sts=allStates().filter(s=>s.mastery!=null);
+  if(!sts.length) return null;
+  let num=0,den=0;
+  sts.forEach(s=>{num+=s.mastery*s.sk.w; den+=s.sk.w});
+  const cov=sts.length/SKILLS.length;
+  return {v:Math.round(45+50*(num/den)), cov};
+}
+function whyCounts(){
+  const c={};
+  S.att.filter(a=>!a.ok&&a.why).forEach(a=>{c[a.why]=(c[a.why]||0)+1});
+  return Object.entries(c).sort((a,b)=>b[1]-a[1]);
+}
+function pickQuestions(ids,n,opts={}){
+  const seen=new Set(S.att.map(a=>a.q));
+  let pool=[];
+  ids.forEach(id=>{pool=pool.concat(BY_SKILL[id]||[])});
+  const fresh=pool.filter(q=>!seen.has(q.id));
+  const rest=pool.filter(q=>seen.has(q.id));
+  const sh=x=>x.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);
+  const out=sh(fresh).concat(sh(rest)).slice(0,n);
+  return opts.keep?out:sh(out);
+}
+
+/* ══════════ 5. العرض ══════════ */
+const app=document.getElementById("app");
+let tab="home", session=null;
+
+const BK={
+  crit :{c:"var(--crit)", cls:"t-crit", lbl:"ثغرة حرجة", hint:"ابدئي من هنا"},
+  frag :{c:"var(--frag)", cls:"t-frag", lbl:"هشّة",       hint:"تحتاج تثبيتاً"},
+  slow :{c:"var(--slow)", cls:"t-slow", lbl:"بطيئة",      hint:"تعرفينها لكن الوقت يخونك"},
+  solid:{c:"var(--solid)",cls:"t-solid",lbl:"متقنة",      hint:"لا تضيّعي وقتك فيها"},
+  none :{c:"var(--line)", cls:"t-none", lbl:"لم تُختبر",  hint:"تحتاج قياساً أولاً"},
+};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pct=v=>v==null?"—":Math.round(v*100)+"%";
+
+function setTab(t){
+  tab=t; session=null;
+  document.querySelectorAll(".nav button").forEach(b=>{
+    b.setAttribute("aria-current", b.dataset.tab===t?"page":"false");
+  });
+  render(); window.scrollTo(0,0);
+}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+
+document.getElementById("themeBtn").onclick=()=>{
+  const cur=document.documentElement.getAttribute("data-theme");
+  const dark=cur? cur==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.documentElement.setAttribute("data-theme", dark?"light":"dark");
+};
+
+function render(){
+  document.getElementById("streak").textContent = streak()? "🔥 "+streak()+" يوم" : "";
+  if(session) return renderSession();
+  ({home:renderHome, train:renderTrain, report:renderReport, plan:renderPlan, group:renderGroup}[tab])();
+}
+
+/* ---------- الرئيسية ---------- */
+function renderHome(){
+  const es=estScore(), sts=allStates();
+  const done=S.att.length;
+  const acc=done? Math.round(100*S.att.filter(a=>a.ok).length/done):0;
+  const crit=sts.filter(s=>s.bucket==="crit").length;
+
+  const heat=SKILLS.map(s=>{
+    const st=stateOf(s.id), b=BK[st.bucket];
+    return `<button class="tile ${b.cls}" data-skill="${s.id}">
+      <span class="nm">${esc(s.name)}</span>
+      <span class="pc tnum">${st.mastery==null?"—":pct(st.mastery)}</span>
+      <span class="mini"><i style="width:${st.mastery==null?100:Math.max(6,st.mastery*100)}%"></i></span>
+    </button>`}).join("");
+
+  app.innerHTML=`
+  <section>
+    <div class="hero">
+      <div class="eyebrow">مؤشر تقديري لدرجتك</div>
+      <div class="scorerow">
+        <div class="score">${es?es.v:"—"}</div>
+        <div class="scoremeta">
+          <div class="muted" style="font-size:12.5px">${es? "بناءً على "+done+" سؤالاً، وتغطية "+Math.round(es.cov*100)+"% من المهارات" : "حُلّي الاختبار التشخيصي ليظهر المؤشر"}</div>
+          <div class="bar"><i style="width:${es?Math.max(4,(es.v-40)/60*100):0}%"></i></div>
+        </div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><b class="tnum">${done}</b><span>سؤال محلول</span></div>
+        <div class="kpi"><b class="tnum">${acc}%</b><span>دقة عامة</span></div>
+        <div class="kpi"><b class="tnum" style="color:${crit?"var(--crit)":"inherit"}">${crit}</b><span>ثغرة حرجة</span></div>
+      </div>
+      <p class="note" style="margin:11px 0 0">هذا مؤشر داخلي يقيس تقدّمك في هذا التطبيق فقط، وليس تنبؤاً بدرجة قياس الرسمية.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sechead"><h2>${S.diag? "مهمة اليوم":"ابدئي من هنا"}</h2></div>
+    ${S.diag? `
+      <div class="card stack">
+        <div class="row" style="align-items:flex-start;gap:12px">
+          <div style="flex:1">
+            <div style="font-weight:600">تدريب ذكي — 12 سؤالاً</div>
+            <div class="muted" style="font-size:12.5px">يختار الأسئلة من أضعف مهاراتك الآن${S.days.includes(today())?" · أنجزتِ جلسة اليوم ✔":""}</div>
+          </div>
+        </div>
+        <button class="btn" id="smart">ابدئي الجلسة</button>
+      </div>` : `
+      <div class="card stack">
+        <div>
+          <div style="font-weight:600">الاختبار التشخيصي</div>
+          <div class="muted" style="font-size:12.5px">25 سؤالاً — سؤال من كل مهارة. لا تخمّني كثيراً؛ الهدف قياس مستواك الحقيقي لا رفع درجتك.</div>
+        </div>
+        <button class="btn" id="diag">ابدئي التشخيص</button>
+        <button class="btn ghost" id="smart">أفضّل التدريب الحر أولاً</button>
+      </div>`}
+  </section>
+
+  <section>
+    <div class="sechead"><h2>خريطة مهاراتك</h2><button class="linkbtn" data-go="report">التقرير الكامل ←</button></div>
+    <div class="heat">${heat}</div>
+    <div class="legend">
+      <span><i style="background:var(--crit)"></i>حرجة</span>
+      <span><i style="background:var(--frag)"></i>هشّة</span>
+      <span><i style="background:var(--slow)"></i>بطيئة</span>
+      <span><i style="background:var(--solid)"></i>متقنة</span>
+      <span><i style="background:var(--line)"></i>لم تُختبر</span>
+    </div>
+  </section>`;
+
+  const d=document.getElementById("diag"); if(d) d.onclick=startDiagnostic;
+  const s=document.getElementById("smart"); if(s) s.onclick=()=>startSmart(12);
+  app.querySelectorAll("[data-skill]").forEach(b=>b.onclick=()=>startSkill(b.dataset.skill));
+  app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>setTab(b.dataset.go));
+}
+
+/* ---------- تدريب ---------- */
+function renderTrain(){
+  const groups={};
+  SKILLS.forEach(s=>{(groups[s.grp] ||= []).push(s)});
+  const blocks=Object.entries(groups).map(([g,list])=>`
+    <div class="sechead" style="margin-top:16px"><h2 style="font-size:14.5px">${esc(g)}</h2></div>
+    <div class="rows">${list.map(s=>{
+      const st=stateOf(s.id), b=BK[st.bucket];
+      return `<button class="rw" data-skill="${s.id}">
+        <span class="stripe" style="background:${b.c}"></span>
+        <span class="body"><span class="t">${esc(s.name)}</span>
+          <span class="s">${BY_SKILL[s.id]?.length||0} أسئلة · ${b.lbl}</span></span>
+        <span class="v tnum">${st.mastery==null?"—":pct(st.mastery)}</span>
+      </button>`}).join("")}</div>`).join("");
+
+  app.innerHTML=`
+  <section>
+    <div class="sechead"><h2>تدريب</h2></div>
+    <div class="card stack">
+      <div>
+        <div style="font-weight:600">تدريب ذكي</div>
+        <div class="muted" style="font-size:12.5px">يوزّع الأسئلة تلقائياً على أضعف مهاراتك وأعلاها وزناً في الاختبار.</div>
+      </div>
+      <div class="row" style="gap:8px">
+        <button class="btn soft" data-smart="8">8 أسئلة</button>
+        <button class="btn soft" data-smart="12">12 سؤالاً</button>
+        <button class="btn soft" data-smart="20">20 سؤالاً</button>
+      </div>
+    </div>
+    ${blocks}
+    <p class="note" style="margin-top:14px">اختاري أي مهارة للتدرّب عليها وحدها. الأسئلة الجديدة تُعرض أولاً قبل تكرار ما حللتِه.</p>
+  </section>`;
+  app.querySelectorAll("[data-smart]").forEach(b=>b.onclick=()=>startSmart(+b.dataset.smart));
+  app.querySelectorAll("[data-skill]").forEach(b=>b.onclick=()=>startSkill(b.dataset.skill));
+}
+
+/* ---------- التقرير ---------- */
+function renderReport(){
+  const sts=allStates();
+  if(!S.att.length){
+    app.innerHTML=`<section><div class="sechead"><h2>تقريري</h2></div>
+      <div class="card empty">ما فيه بيانات بعد.<br>حُلّي الاختبار التشخيصي أول شيء، ويبني التطبيق تقريرك تلقائياً.
+      <div style="margin-top:14px"><button class="btn" id="diag2">ابدئي التشخيص</button></div></div></section>`;
+    document.getElementById("diag2").onclick=startDiagnostic; return;
+  }
+  const bucketBlock=(key)=>{
+    const list=sts.filter(s=>s.bucket===key).sort((a,b)=>priority(b)-priority(a));
+    if(!list.length) return "";
+    const b=BK[key];
+    return `<div class="sechead" style="margin-top:18px">
+        <h2 style="font-size:14.5px"><span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:${b.c};margin-inline-end:7px"></span>${b.lbl} <span class="muted" style="font-weight:400;font-size:12px">· ${b.hint}</span></h2>
+        <span class="muted tnum" style="font-size:12px">${list.length}</span></div>
+      <div class="rows">${list.map(s=>`
+        <button class="rw" data-skill="${s.id}">
+          <span class="stripe" style="background:${b.c}"></span>
+          <span class="body"><span class="t">${esc(s.sk.name)}</span>
+            <span class="s">${s.n} محاولات · وزنه في الاختبار ${s.sk.w}/7${s.bucket==="slow"?" · زمنك ×"+s.speed.toFixed(1):""}${s.guessRate>=0.5?" · أغلبها تخمين":""}</span></span>
+          <span class="v tnum">${pct(s.mastery)}</span>
+        </button>`).join("")}</div>`;
+  };
+  const why=whyCounts();
+  const totalWrong=S.att.filter(a=>!a.ok).length;
+  const whyBlock = why.length? `
+    <div class="sechead" style="margin-top:22px"><h2 style="font-size:14.5px">لماذا تخطئين؟</h2></div>
+    <div class="rows">${why.slice(0,6).map(([k,n])=>`
+      <div class="rw"><span class="stripe" style="background:var(--crit)"></span>
+      <span class="body"><span class="t">${esc(WHY[k]||k)}</span>
+      <span class="s">${n} من ${totalWrong} من أخطائك</span></span>
+      <span class="v tnum">${Math.round(100*n/totalWrong)}%</span></div>`).join("")}</div>
+    <p class="note" style="margin-top:9px">هذه أسباب الخطأ الجذرية، مستخرجة من الخيار الخاطئ الذي اخترتِه في كل سؤال — وليست مجرد اسم المهارة.</p>`:"";
+
+  const slowest=sts.filter(s=>s.speed!=null).sort((a,b)=>b.speed-a.speed).slice(0,3);
+
+  app.innerHTML=`<section>
+    <div class="sechead"><h2>تقريري</h2><span class="muted tnum" style="font-size:12px">${S.att.length} سؤالاً</span></div>
+    ${bucketBlock("crit")}${bucketBlock("frag")}${bucketBlock("slow")}${bucketBlock("solid")}${bucketBlock("none")}
+    ${whyBlock}
+    ${slowest.length?`
+      <div class="sechead" style="margin-top:22px"><h2 style="font-size:14.5px">أبطأ ما لديك</h2></div>
+      <div class="rows">${slowest.map(s=>`<div class="rw">
+        <span class="stripe" style="background:var(--slow)"></span>
+        <span class="body"><span class="t">${esc(s.sk.name)}</span>
+        <span class="s">الزمن المعياري ${s.sk.t} ثانية</span></span>
+        <span class="v tnum">×${s.speed.toFixed(1)}</span></div>`).join("")}</div>
+      <p class="note" style="margin-top:9px">×1.0 يعني أنك بالزمن المعياري. فوق ×1.3 يعني أن الوقت — لا المعرفة — هو ما سيكلّفك درجات.</p>`:""}
+
+    <div class="sechead" style="margin-top:24px"><h2 style="font-size:14.5px">مشاركة تقريرك</h2></div>
+    <div class="card stack">
+      <div class="muted" style="font-size:12.5px">اكتبي اسمك، ثم انسخي الكود وأرسليه لمن يتابع مجموعتكن. الكود يحمل ملخّص مهاراتك فقط — لا يحمل إجاباتك ولا أي بيانات شخصية أخرى.</div>
+      <input class="inp" id="nm" placeholder="اسمك" value="${esc(S.name||"")}" maxlength="24">
+      <button class="btn soft" id="gen">أنشئي كود تقريري</button>
+      <div id="genout" class="hidden stack">
+        <textarea class="code" id="codebox" readonly></textarea>
+        <button class="btn" id="cp">نسخ الكود</button>
+      </div>
+    </div>
+  </section>`;
+  app.querySelectorAll("[data-skill]").forEach(b=>b.onclick=()=>startSkill(b.dataset.skill));
+  const nm=document.getElementById("nm");
+  document.getElementById("gen").onclick=()=>{
+    S.name=nm.value.trim().slice(0,24)||"طالبة"; save();
+    const box=document.getElementById("codebox");
+    box.value=encodeReport(buildReport());
+    document.getElementById("genout").classList.remove("hidden");
+  };
+  document.getElementById("cp").onclick=async e=>{
+    const box=document.getElementById("codebox");
+    box.select(); box.setSelectionRange(0,99999);
+    let done=false;
+    try{ await navigator.clipboard.writeText(box.value); done=true; }
+    catch(err){ try{ done=document.execCommand("copy"); }catch(e2){} }
+    e.target.textContent = done? "تم النسخ ✔" : "حدّدي النص فوق وانسخيه يدوياً";
+    setTimeout(()=>{e.target.textContent="نسخ الكود"},2500);
+  };
+}
+
+/* ---------- لوحة المجموعة ---------- */
+function renderGroup(){
+  const g=S.grp||[];
+  const rows=g.map(reportStats);
+
+  let body;
+  if(!rows.length){
+    body=`<div class="card empty">ما أُضيفت أي طالبة بعد.<br>اطلبي من كل واحدة أن تفتح «تقريري» ← «مشاركة تقريرك»، وترسل لك الكود.</div>`;
+  }else{
+    // تجميع على مستوى المهارة
+    const per={};
+    g.forEach(p=>Object.entries(p.s).forEach(([id,v])=>{
+      const sk=SK[id]; if(!sk) return;
+      const [cnt,right,med]=v, m=right/cnt;
+      (per[id] ||= {sum:0,cnt:0,crit:0,slow:0});
+      per[id].sum+=m; per[id].cnt++;
+      if(m<0.5&&cnt>=2) per[id].crit++;
+      if(med>sk.t*1.3) per[id].slow++;
+    }));
+    const skillRows=Object.entries(per).map(([id,v])=>({
+      id, sk:SK[id], avg:v.sum/v.cnt, n:v.cnt, crit:v.crit, slow:v.slow,
+      pri:(1-v.sum/v.cnt)*SK[id].w
+    })).sort((a,b)=>b.pri-a.pri);
+
+    const whyAll={};
+    g.forEach(p=>Object.entries(p.w||{}).forEach(([k,n])=>{whyAll[k]=(whyAll[k]||0)+n}));
+    const whySorted=Object.entries(whyAll).sort((a,b)=>b[1]-a[1]);
+    const whyTotal=whySorted.reduce((s,x)=>s+x[1],0);
+
+    const avgEst=Math.round(rows.reduce((s,r)=>s+(r.est||0),0)/rows.length);
+    const needHelp=rows.filter(r=>(r.est||0)<65 || r.crit.length>=4);
+    const cShared=skillRows.filter(s=>s.crit>=Math.ceil(g.length/2)).length;
+    const col=v=>v<0.5?"var(--crit)":v<0.75?"var(--frag)":"var(--solid)";
+
+    body=`
+    <div class="hero">
+      <div class="eyebrow">متوسط المجموعة</div>
+      <div class="scorerow">
+        <div class="score tnum">${avgEst||"—"}</div>
+        <div class="scoremeta">
+          <div class="muted" style="font-size:12.5px">${g.length} طالبة · آخر تحديث ${esc(rows.map(r=>r.date).sort().pop()||"")}</div>
+          <div class="bar"><i style="width:${Math.max(4,(avgEst-40)/60*100)}%"></i></div>
+        </div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><b class="tnum">${g.length}</b><span>طالبة</span></div>
+        <div class="kpi"><b class="tnum" style="color:${cShared?"var(--crit)":"inherit"}">${cShared}</b><span>ثغرة مشتركة</span></div>
+        <div class="kpi"><b class="tnum" style="color:${needHelp.length?"var(--frag)":"inherit"}">${needHelp.length}</b><span>تحتاج متابعة</span></div>
+      </div>
+    </div>
+
+    <div class="sechead" style="margin-top:22px"><h2 style="font-size:14.5px">أضعف مهارات المجموعة</h2><span class="muted" style="font-size:11.5px">مرتّبة بالوزن × الضعف</span></div>
+    <div class="glist">
+      ${skillRows.slice(0,8).map(s=>`<div class="gbar">
+        <span class="lab">${esc(s.sk.name)}</span>
+        <span class="track"><i style="width:${Math.max(3,s.avg*100)}%;background:${col(s.avg)}"></i></span>
+        <span class="val" style="color:${col(s.avg)}">${Math.round(s.avg*100)}%</span>
+      </div>`).join("")}
+    </div>
+    <p class="note" style="margin-top:9px">هذه المهارات هي أعلى عائد لأي حصة جماعية: ضعف عام × وزن عالٍ في الاختبار.</p>
+
+    ${cShared?`
+      <div class="sechead" style="margin-top:22px"><h2 style="font-size:14.5px">ثغرات يشترك فيها نصف المجموعة فأكثر</h2></div>
+      <div class="rows">${skillRows.filter(s=>s.crit>=Math.ceil(g.length/2)).map(s=>`
+        <div class="rw"><span class="stripe" style="background:var(--crit)"></span>
+        <span class="body"><span class="t">${esc(s.sk.name)}</span>
+        <span class="s">${s.crit} من ${g.length} طالبات تحت 50%${s.slow?` · ${s.slow} بطيئات فيها`:""}</span></span>
+        <span class="v tnum">${Math.round(s.avg*100)}%</span></div>`).join("")}</div>`:""}
+
+    ${whySorted.length?`
+      <div class="sechead" style="margin-top:22px"><h2 style="font-size:14.5px">أشيع أسباب الخطأ في المجموعة</h2></div>
+      <div class="rows">${whySorted.slice(0,5).map(([k,n])=>`
+        <div class="rw"><span class="stripe" style="background:var(--frag)"></span>
+        <span class="body"><span class="t">${esc(WHY[k]||k)}</span><span class="s">${n} خطأً</span></span>
+        <span class="v tnum">${Math.round(100*n/whyTotal)}%</span></div>`).join("")}</div>`:""}
+
+    <div class="sechead" style="margin-top:22px"><h2 style="font-size:14.5px">الطالبات</h2></div>
+    <div class="tblwrap"><table class="g">
+      <thead><tr><th>الاسم</th><th>المؤشر</th><th>الدقة</th><th>أسئلة</th><th>أضعف مهارة</th><th></th></tr></thead>
+      <tbody>${rows.map((r,i)=>{
+        const w=r.crit[0];
+        const flag=(r.est||0)<65||r.crit.length>=4;
+        return `<tr>
+          <td><span class="dot" style="background:${flag?"var(--crit)":"var(--solid)"}"></span>${esc(r.name)}</td>
+          <td class="n">${r.est??"—"}</td>
+          <td class="n">${Math.round(r.acc*100)}%</td>
+          <td class="n">${r.total}</td>
+          <td>${w?esc(SK[w.id].name):"<span class='muted'>—</span>"}</td>
+          <td><button class="linkbtn" data-del="${i}">حذف</button></td>
+        </tr>`}).join("")}</tbody>
+    </table></div>
+    <p class="note" style="margin-top:9px">المؤشر تقديري داخلي مبني على تدريب التطبيق فقط. النقطة الحمراء تعني مؤشراً تحت 65 أو 4 ثغرات حرجة فأكثر.</p>`;
+  }
+
+  app.innerHTML=`<section>
+    <div class="sechead"><h2>المجموعة</h2><span class="muted" style="font-size:12px">${g.length? g.length+" طالبة":""}</span></div>
+    <div class="card stack">
+      <div>
+        <div style="font-weight:600">إضافة تقرير طالبة</div>
+        <div class="muted" style="font-size:12.5px">الصقي الكود الذي أرسلته لك، ويُضاف إلى التحليل فوراً. الكود نفسه يُحدّث بياناتها إذا أرسلته مرة أخرى.</div>
+      </div>
+      <textarea class="code" id="pastebox" placeholder="MQ1...."></textarea>
+      <button class="btn" id="add">إضافة إلى المجموعة</button>
+      <div id="msg" class="note"></div>
+    </div>
+    <div style="margin-top:18px">${body}</div>
+  </section>`;
+
+  document.getElementById("add").onclick=()=>{
+    const box=document.getElementById("pastebox"), msg=document.getElementById("msg");
+    try{
+      const p=decodeReport(box.value);
+      const i=S.grp.findIndex(x=>x.n===p.n);
+      if(i>=0) S.grp[i]=p; else S.grp.push(p);
+      save(); box.value="";
+      msg.textContent = i>=0 ? "حُدّث تقرير "+p.n+" ✔" : "أُضيفت "+p.n+" ✔";
+      renderGroup();
+    }catch(e){
+      msg.style.color="var(--crit)";
+      msg.textContent="الكود غير صالح. تأكدي من نسخه كاملاً كما هو، ويبدأ بـ MQ1.";
+    }
+  };
+  app.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
+    S.grp.splice(+b.dataset.del,1); save(); renderGroup();
+  });
+}
+
+/* ---------- الخطة ---------- */
+function renderPlan(){
+  const H={"4":{w:4,d:25,lbl:"أقل من شهر"},"8":{w:8,d:18,lbl:"شهران"},"12":{w:12,d:14,lbl:"3 أشهر فأكثر"}};
+  const h=H[S.horizon]||H["8"];
+  const sts=allStates().sort((a,b)=>priority(b)-priority(a));
+  const ranked=sts.filter(s=>s.bucket!=="solid");
+  const perWeek = h.w<=4?4:3;
+  const weeks=[];
+  for(let i=0;i<h.w;i++){
+    const focus=ranked.slice(i*perWeek,(i+1)*perWeek);
+    if(!focus.length && i>0) break;
+    weeks.push(focus.length?focus:ranked.slice(0,perWeek));
+  }
+  const rev=(i)=>i>=2? ranked.slice((i-2)*perWeek,(i-2)*perWeek+2).map(s=>s.sk.name):[];
+
+  app.innerHTML=`<section>
+    <div class="sechead"><h2>خطة المذاكرة</h2></div>
+    <div class="card stack">
+      <div>
+        <div style="font-weight:600">كم باقي على اختبارك؟</div>
+        <div class="muted" style="font-size:12.5px">الخطة تُبنى من نقاط ضعفك الفعلية وتتغيّر كلما تحسّنتِ.</div>
+      </div>
+      <div class="seg">
+        ${Object.entries(H).map(([k,v])=>`<button data-h="${k}" aria-pressed="${S.horizon===k}">${v.lbl}</button>`).join("")}
+      </div>
+      <div class="row" style="justify-content:space-between;font-size:13px">
+        <span class="muted">جرعة يومية مقترحة</span><b class="tnum">${h.d} سؤالاً</b>
+      </div>
+    </div>
+
+    ${S.att.length? weeks.map((f,i)=>`
+      <div class="week" style="margin-top:${i?10:16}px">
+        <h4>الأسبوع ${i+1}<span>${i===0?"تشخيص وتثبيت":i===weeks.length-1?"محاكاة ومراجعة":"بناء"}</span></h4>
+        <ul>
+          ${f.map(s=>`<li>${esc(s.sk.name)} — ${h.d} سؤالاً موزّعة على الأسبوع${s.bucket==="slow"?" (بمؤقّت صارم)":""}</li>`).join("")}
+          ${rev(i).length?`<li class="muted">مراجعة متباعدة: ${rev(i).map(esc).join(" · ")}</li>`:""}
+          ${i===weeks.length-1?`<li class="muted">محاكاة كاملة بالتوقيت + إعادة قراءة تقرير «لماذا تخطئين»</li>`:""}
+        </ul>
+      </div>`).join("") : `<div class="card empty" style="margin-top:16px">الخطة تحتاج بياناتك أولاً.<div style="margin-top:14px"><button class="btn" id="diag3">ابدئي التشخيص</button></div></div>`}
+
+    <p class="note" style="margin-top:14px">الأساس البحثي للخطة: الانتظام اليومي، والاسترجاع النشط (الحل بدل إعادة القراءة)، والتغذية الراجعة الفورية، والمراجعة المتباعدة. الجرعة اليومية أهم من الجلسات الطويلة المتباعدة.</p>
+  </section>`;
+  app.querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{S.horizon=b.dataset.h; save(); renderPlan()});
+  const d=document.getElementById("diag3"); if(d) d.onclick=startDiagnostic;
+}
+
+/* ---------- الجلسة ---------- */
+function startDiagnostic(){
+  const qs=SKILLS.map(s=>pickQuestions([s.id],1)[0]).filter(Boolean);
+  session={qs,i:0,mode:"diag",title:"الاختبار التشخيصي",answered:null,conf:null,t0:Date.now(),right:0};
+  render();
+}
+function startSmart(n){
+  const ranked=allStates().sort((a,b)=>priority(b)-priority(a));
+  const ids=[]; let k=0;
+  while(ids.length<n && k<200){ ids.push(ranked[k%Math.min(8,ranked.length)].id); k++ }
+  const qs=[]; const used=new Set();
+  ids.forEach(id=>{
+    const cand=pickQuestions([id],4).filter(q=>!used.has(q.id));
+    if(cand[0]){used.add(cand[0].id); qs.push(cand[0])}
+  });
+  if(!qs.length) return;
+  session={qs:qs.slice(0,n),i:0,mode:"smart",title:"تدريب ذكي",answered:null,conf:null,t0:Date.now(),right:0};
+  render();
+}
+function startSkill(id){
+  const qs=pickQuestions([id],6);
+  if(!qs.length) return;
+  session={qs,i:0,mode:"skill",title:SK[id].name,answered:null,conf:null,t0:Date.now(),right:0};
+  render();
+}
+
+let tick=null;
+function renderSession(){
+  clearInterval(tick);
+  const s=session;
+  if(s.i>=s.qs.length) return renderSummary();
+  const q=s.qs[s.i], sk=SK[q.s];
+  const showAns=s.answered!=null;
+
+  app.innerHTML=`<div class="qwrap">
+    <div class="qbar">
+      <button class="iconbtn" id="quit" aria-label="إنهاء الجلسة">✕</button>
+      <span class="prog"><i style="width:${(s.i/s.qs.length)*100}%"></i></span>
+      <span class="timer" id="tmr">0:00</span>
+    </div>
+    <div class="qmeta">
+      <span class="chip">${esc(s.title)}</span>
+      <span class="chip">${esc(sk.name)}</span>
+      <span class="muted tnum" style="font-size:12px">${s.i+1} / ${s.qs.length}</span>
+    </div>
+    ${q.p?`<div class="passage">${esc(q.p)}</div>`:""}
+    <p class="stem">${esc(q.q)}</p>
+    ${showAns?"":`<div class="conf" role="group" aria-label="مستوى ثقتك">
+      <button data-c="sure" aria-pressed="${s.conf==="sure"}">أنا متأكدة</button>
+      <button data-c="guess" aria-pressed="${s.conf==="guess"}">أخمّن</button>
+    </div>`}
+    <div class="choices">
+      ${q.c.map((c,i)=>{
+        let cls="ch";
+        if(showAns){ if(i===q.a) cls+=" ok"; else if(i===s.answered) cls+=" no"; }
+        return `<button class="${cls}" data-i="${i}" ${showAns?"disabled":""}>
+          <span class="k">${"أبجد"[i]}</span><span class="txt">${esc(c)}</span></button>`}).join("")}
+    </div>
+    ${showAns?`
+      <div class="verdict ${s.answered===q.a?"good":"bad"}">
+        <h4>${s.answered===q.a?"إجابة صحيحة":"الإجابة الصحيحة: "+q.c[q.a]}</h4>
+        <p>${esc(q.e)}</p>
+        ${s.answered!==q.a && q.m[s.answered]?`<div class="why">سبب الخطأ: ${esc(WHY[q.m[s.answered]]||"")}</div>`:""}
+      </div>
+      <div style="margin-top:14px"><button class="btn" id="next">${s.i+1<s.qs.length?"السؤال التالي":"عرض النتيجة"}</button></div>`:""}
+  </div>`;
+
+  document.getElementById("quit").onclick=()=>{session=null; setTab(tab)};
+  app.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{s.conf=b.dataset.c; renderSession()});
+  app.querySelectorAll(".ch").forEach(b=>b.onclick=()=>answer(+b.dataset.i));
+  const nx=document.getElementById("next");
+  if(nx) nx.onclick=()=>{s.i++; s.answered=null; s.conf=null; s.t0=Date.now(); renderSession()};
+
+  if(!showAns){
+    const el=document.getElementById("tmr");
+    tick=setInterval(()=>{
+      const sec=Math.floor((Date.now()-s.t0)/1000);
+      el.textContent=Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0");
+      el.style.color = sec>sk.t*1.5 ? "var(--slow)" : "";
+    },1000);
+  }
+}
+function answer(i){
+  const s=session, q=s.qs[s.i];
+  const t=Math.max(2,Math.round((Date.now()-s.t0)/1000));
+  const ok=i===q.a;
+  if(ok) s.right++;
+  S.att.push({q:q.id,s:q.s,ok,t,c:s.conf||"unset",why:ok?null:q.m[i],d:today()});
+  if(S.att.length>2000) S.att=S.att.slice(-2000);
+  markDay();
+  if(s.mode==="diag") S.diag=true;
+  save();
+  s.answered=i;
+  renderSession();
+}
+function renderSummary(){
+  clearInterval(tick);
+  const s=session, n=s.qs.length, r=s.right;
+  const bySkill={};
+  s.qs.forEach((q,i)=>{(bySkill[q.s] ||= {n:0}).n++});
+  const touched=Object.keys(bySkill).map(id=>stateOf(id)).sort((a,b)=>priority(b)-priority(a));
+  const worst=touched.filter(t=>t.bucket==="crit"||t.bucket==="frag").slice(0,3);
+  app.innerHTML=`<div class="qwrap">
+    <section style="padding-top:6px">
+      <div class="hero">
+        <div class="eyebrow">${esc(s.title)}</div>
+        <div class="scorerow">
+          <div class="score tnum">${r}<span style="font-size:22px;color:var(--muted)">/${n}</span></div>
+          <div class="scoremeta">
+            <div class="muted" style="font-size:12.5px">${Math.round(100*r/n)}% دقة في هذه الجلسة</div>
+            <div class="bar"><i style="width:${100*r/n}%"></i></div>
+          </div>
+        </div>
+      </div>
+      ${worst.length?`
+        <div class="sechead" style="margin-top:20px"><h2 style="font-size:14.5px">ابدئي من هنا</h2></div>
+        <div class="rows">${worst.map(t=>`<button class="rw" data-skill="${t.id}">
+          <span class="stripe" style="background:${BK[t.bucket].c}"></span>
+          <span class="body"><span class="t">${esc(t.sk.name)}</span><span class="s">${BK[t.bucket].lbl} · ${pct(t.mastery)}</span></span>
+          <span class="v">تدرّبي ←</span></button>`).join("")}</div>`:
+        `<p class="note" style="margin-top:16px">ما ظهرت ثغرات حرجة في هذه الجلسة. واصلي على مهارات أخرى لتكتمل خريطتك.</p>`}
+      <div class="stack" style="margin-top:18px">
+        <button class="btn" id="again">جلسة أخرى</button>
+        <button class="btn ghost" data-go="report">شوفي تقريرك الكامل</button>
+      </div>
+    </section>
+  </div>`;
+  document.getElementById("again").onclick=()=>startSmart(12);
+  app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>setTab(b.dataset.go));
+  app.querySelectorAll("[data-skill]").forEach(b=>b.onclick=()=>startSkill(b.dataset.skill));
+}
+
+render();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
