@@ -155,6 +155,12 @@ section{padding:18px 0 8px}
 .stem .frm{display:inline-block;background:var(--surface-2);border-radius:6px;padding:1px 7px;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
 .m{direction:ltr;unicode-bidi:isolate-override;font-variant-numeric:tabular-nums}
 .passage{background:var(--surface-2);border-radius:12px;padding:13px 14px;font-size:14.5px;line-height:1.95;margin-bottom:12px}
+/* المقارنة الكمية: صفّان منفصلان — الشرطة بينهما كانت تُقرأ إشارة طرح */
+.cmp{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:10px 0 2px;background:var(--surface)}
+.cmp .r{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.cmp .r+.r{border-top:1px solid var(--line)}
+.cmp .lb{flex:none;width:94px;font-size:11.5px;color:var(--muted);font-weight:600;letter-spacing:.01em}
+.cmp .vl{flex:1;font-size:16.5px;font-weight:600;line-height:1.6}
 .conf{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:11px;margin:12px 0}
 .conf button{flex:1;background:transparent;border:0;border-radius:8px;padding:7px;font-size:12.5px;font-weight:600;color:var(--muted)}
 .conf button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
@@ -757,6 +763,25 @@ const OPERAND=/[0-9٠-٩]+|[سصأبجد]/g;     // المُعاملات الت�
 const LEADBAD=/^[\s=<>≤≥×÷:,.]+/;        // عوامل ثنائية في البداية تبقى خارج العزل
 const TAILBAD=/[\s=<>≤≥×÷:,.+\-−]+$/;    // وكذلك في النهاية
 
+/* أسئلة المقارنة الكمية: تُفصل القيمتان في صفّين بدل شرطة بينهما،
+   لأن «القيمة الأولى = 2/3 — القيمة الثانية = 0.7» تُقرأ كأنها طرح. */
+const V1="القيمة الأولى", V2="القيمة الثانية";
+function cmpParts(t){
+  const i=t.indexOf(V1); if(i<0) return null;
+  const j=t.indexOf(" — ", i); if(j<0) return null;
+  const k=t.indexOf(V2, j); if(k<0) return null;
+  const strip=x=>x.trim().replace(/^[=:]\s*/,"").trim();
+  return { pre:t.slice(0,i).trim(), a:strip(t.slice(i+V1.length,j)), b:strip(t.slice(k+V2.length)) };
+}
+function cmpHTML(t){
+  const p=cmpParts(t); if(!p) return null;
+  return (p.pre?`<p class="stem">${mfix(p.pre)}</p>`:"")+
+    `<div class="cmp">
+       <div class="r"><span class="lb">${V1}</span><span class="vl">${mfix(p.a)}</span></div>
+       <div class="r"><span class="lb">${V2}</span><span class="vl">${mfix(p.b)}</span></div>
+     </div>`;
+}
+
 function mfix(s){
   const arr=String(s).split(MTOK);
   return arr.map((part,i)=>{
@@ -1316,7 +1341,7 @@ function renderSession(){
       <span class="muted tnum" style="font-size:12px">${s.i+1} / ${s.qs.length}</span>
     </div>
     ${q.p?`<div class="passage">${mfix(q.p)}</div>`:""}
-    <p class="stem">${mfix(q.q)}</p>
+    ${cmpHTML(q.q) || `<p class="stem">${mfix(q.q)}</p>`}
     ${showAns?"":`<div class="conf" role="group" aria-label="مستوى ثقتك">
       <button data-c="sure" aria-pressed="${s.conf==="sure"}">أنا متأكدة</button>
       <button data-c="guess" aria-pressed="${s.conf==="guess"}">أخمّن</button>

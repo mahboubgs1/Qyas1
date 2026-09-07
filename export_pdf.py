@@ -41,6 +41,7 @@ SKILLS.forEach(s=>{
     n++;
     out.push({type:"q", n:n, id:"q#"+idx, skill:s.name, d:q.d,
       passage: q.p? mfix(q.p):null,
+      cmp: cmpParts(q.q) ? {pre:mfix(cmpParts(q.q).pre), a:mfix(cmpParts(q.q).a), b:mfix(cmpParts(q.q).b)} : null,
       stem: mfix(q.q),
       choices: q.c.map((c,j)=>({ t:mfix(c), ok:j===q.a, why:q.m[j]? (WHY[q.m[j]]||q.m[j]) : null })),
       expl: mfix(q.e)});
@@ -80,6 +81,11 @@ ol.ch li.ok::after{content:" ✔";color:#2E8B69}
 .why{color:#9a8560;font-size:8pt}
 .ex{margin-top:5pt;font-size:9.5pt;color:#3C4B47;background:#FAFBFA;border-radius:4pt;padding:5pt 8pt}
 .ex b{color:#0E6E63}
+table.cmp{border-collapse:collapse;width:100%;margin:4pt 0 6pt;border:0.5pt solid #C6D6D0;border-radius:3pt}
+table.cmp td{border-bottom:0.5pt solid #DCE5E1;padding:4pt 8pt;font-size:10.5pt}
+table.cmp tr:last-child td{border-bottom:0}
+table.cmp td.lb{width:74pt;color:#5E6E6A;font-size:8.5pt;background:#F4F7F5}
+table.cmp td.vl{font-weight:700}
 </style></head><body>
 """
 
@@ -136,7 +142,15 @@ def main():
                      % (x["n"], x["skill"], x["d"], x["id"]))
             if x["passage"]:
                 b.append('<div class="passage">%s</div>' % x["passage"])
-            b.append('<p class="stem">%s</p>' % x["stem"])
+            if x.get("cmp"):
+                c = x["cmp"]
+                if c["pre"]:
+                    b.append('<p class="stem">%s</p>' % c["pre"])
+                b.append('<table class="cmp"><tr><td class="lb">القيمة الأولى</td><td class="vl">%s</td></tr>'
+                         '<tr><td class="lb">القيمة الثانية</td><td class="vl">%s</td></tr></table>'
+                         % (c["a"], c["b"]))
+            else:
+                b.append('<p class="stem">%s</p>' % x["stem"])
             b.append('<ol class="ch">')
             for c in x["choices"]:
                 w = ' <span class="why">— %s</span>' % c["why"] if c["why"] else ""

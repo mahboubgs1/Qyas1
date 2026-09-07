@@ -1,5 +1,5 @@
 /* مِقياس — تخزين مؤقت بسيط ليعمل التطبيق بدون إنترنت */
-const CACHE = "miqyas-v11";
+const CACHE = "miqyas-v12";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png"];
 
 self.addEventListener("install", e => {

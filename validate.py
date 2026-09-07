@@ -88,6 +88,15 @@ GOLD.forEach(([name,input,expect])=>{
   else if(got!==expect) err("GOLD",name+" ← المتوقع «"+expect+"» والناتج «"+got+"»");
 });
 
+/* 4ج) كل سؤال مقارنة يجب أن ينقسم إلى صفّين (الشرطة بينهما تُقرأ إشارة طرح) */
+Q.forEach((q,i)=>{
+  const isCmp = q.c.some(c=>c.indexOf("القيمة الأولى أكبر")>=0);
+  const p = (typeof cmpParts==="function") ? cmpParts(q.q) : null;
+  if(isCmp && !p) err("CMP-SPLIT","q#"+i+" سؤال مقارنة لم ينقسم إلى صفّين: «"+cut(q.q)+"»");
+  if(!isCmp && p)  err("CMP-SPLIT","q#"+i+" قُسِّم سؤال ليس مقارنة: «"+cut(q.q)+"»");
+  if(p && (!p.a || !p.b)) err("CMP-SPLIT","q#"+i+" إحدى القيمتين فارغة");
+});
+
 /* 5) الصياغة العربية */
 const MASC=/\b(حدّد|حدد|أوجدْ|اختر|أكمل الجملة التالية|قارنْ)\s/;
 Q.forEach((q,i)=>{
