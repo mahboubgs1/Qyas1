@@ -153,6 +153,7 @@ section{padding:18px 0 8px}
 .qmeta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
 .stem{font-size:17px;line-height:1.85;font-weight:500;margin:6px 0 4px}
 .stem .frm{display:inline-block;background:var(--surface-2);border-radius:6px;padding:1px 7px;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.m{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
 .passage{background:var(--surface-2);border-radius:12px;padding:13px 14px;font-size:14.5px;line-height:1.95;margin-bottom:12px}
 .conf{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:11px;margin:12px 0}
 .conf button{flex:1;background:transparent;border:0;border-radius:8px;padding:7px;font-size:12.5px;font-weight:600;color:var(--muted)}
@@ -719,6 +720,25 @@ const BK={
   none :{c:"var(--line)", cls:"t-none", lbl:"لم تُختبر",  hint:"تحتاج قياساً أولاً"},
 };
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* عزل التعابير الرياضية عن اتجاه النص العربي.
+   بدونه يقلب المتصفح ترتيب المعادلة: «5 + 7 × (11 − 8)» تُعرض «(8 − 11) × 7 + 5». */
+const MTOK=/([0-9٠-٩\s.,:+\-−×÷=<>≤≥%()²³⁴⁵√π\/سص]+)/g;
+const HASNUM=/[0-9٠-٩]/, HASOP=/[+\-−×÷=<>≤≥:()√²³⁴⁵π%\/]/;
+function mfix(s){
+  return String(s).split(MTOK).map((part,i)=>{
+    if(i%2!==1 || !HASNUM.test(part) || !HASOP.test(part)) return esc(part);
+    let core=part, head="", tail="";
+    const v=core.match(/(\s+[سص])$/);          // «9π سم» ← لا تبتلع بداية الكلمة العربية
+    if(v){ tail=v[1]+tail; core=core.slice(0,-v[1].length); }
+    let mh=core.match(/^[\s:,.]+/);            // ترقيم قبل التعبير يبقى مع النص العربي
+    if(mh){ head+=mh[0]; core=core.slice(mh[0].length); }
+    let mt=core.match(/[\s:,.]+$/);            // ونقطة/فاصلة بعده كذلك
+    if(mt){ tail=mt[0]+tail; core=core.slice(0,-mt[0].length); }
+    if(!HASNUM.test(core)||!HASOP.test(core)) return esc(part);
+    return esc(head)+'<span class="m">'+esc(core)+'</span>'+esc(tail);
+  }).join("");
+}
 const pct=v=>v==null?"—":Math.round(v*100)+"%";
 
 function setTab(t){
@@ -1153,8 +1173,8 @@ function renderSession(){
       <span class="chip">${esc(sk.name)}</span>
       <span class="muted tnum" style="font-size:12px">${s.i+1} / ${s.qs.length}</span>
     </div>
-    ${q.p?`<div class="passage">${esc(q.p)}</div>`:""}
-    <p class="stem">${esc(q.q)}</p>
+    ${q.p?`<div class="passage">${mfix(q.p)}</div>`:""}
+    <p class="stem">${mfix(q.q)}</p>
     ${showAns?"":`<div class="conf" role="group" aria-label="مستوى ثقتك">
       <button data-c="sure" aria-pressed="${s.conf==="sure"}">أنا متأكدة</button>
       <button data-c="guess" aria-pressed="${s.conf==="guess"}">أخمّن</button>
@@ -1164,12 +1184,12 @@ function renderSession(){
         let cls="ch";
         if(showAns){ if(i===q.a) cls+=" ok"; else if(i===s.answered) cls+=" no"; }
         return `<button class="${cls}" data-i="${i}" ${showAns?"disabled":""}>
-          <span class="k">${"أبجد"[i]}</span><span class="txt">${esc(c)}</span></button>`}).join("")}
+          <span class="k">${"أبجد"[i]}</span><span class="txt">${mfix(c)}</span></button>`}).join("")}
     </div>
     ${showAns?`
       <div class="verdict ${s.answered===q.a?"good":"bad"}">
-        <h4>${s.answered===q.a?"إجابة صحيحة":"الإجابة الصحيحة: "+q.c[q.a]}</h4>
-        <p>${esc(q.e)}</p>
+        <h4>${s.answered===q.a?"إجابة صحيحة":"الإجابة الصحيحة: "+mfix(q.c[q.a])}</h4>
+        <p>${mfix(q.e)}</p>
         ${s.answered!==q.a && q.m[s.answered]?`<div class="why">سبب الخطأ: ${esc(WHY[q.m[s.answered]]||"")}</div>`:""}
       </div>
       <div style="margin-top:14px"><button class="btn" id="next">${s.i+1<s.qs.length?"السؤال التالي":"عرض النتيجة"}</button></div>`:""}
