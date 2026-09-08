@@ -59,7 +59,8 @@ HTML_HEAD = """<!DOCTYPE html>
 @page{size:A4;margin:14mm 13mm 16mm}
 *{box-sizing:border-box}
 body{margin:0;font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;font-size:10.5pt;line-height:1.75;color:#12201D}
-.m{direction:ltr;unicode-bidi:isolate-override;font-variant-numeric:tabular-nums}
+.m{direction:ltr;unicode-bidi:isolate-override;font-variant-numeric:tabular-nums;background:#EFF3F1;border-radius:2.5pt;padding:0 2.5pt}
+.s{direction:ltr;unicode-bidi:isolate}
 h1{font-family:"Readex Pro";font-size:24pt;margin:0 0 4pt;letter-spacing:-.02em}
 .sub{color:#5E6E6A;font-size:10pt;margin-bottom:18pt}
 .cover{border-bottom:2px solid #0E6E63;padding-bottom:14pt;margin-bottom:16pt}
